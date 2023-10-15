@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cafeinated</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <header id="site-header">
+        <div class="container">
+        <div>
+            <img src="{{ url_for('static', filename='img/logo_cafeinated.png') }}" class="cafeinated-logo" action="">
+        </div>
+        <ul class="nav">
+            <li action="">Homepage</li>
+            <li action="">Coffee Shops</li>
+            <li action="">About Us</li>
+            <li action="">Account</li>
+            <li action="">Shopping Cart</li>
+        </ul>
+        </div>
+    </header>
+{% block head %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>
