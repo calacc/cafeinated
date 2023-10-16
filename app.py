@@ -14,7 +14,23 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/about-us')
+def about_us():
+    return render_template('about-us.html')
+
+@app.route('/my-account')
+def my_account():
+    return render_template('my-account.html')
+
+@app.route('/shopping-cart')
+def shopping_cart():
+    return render_template('shopping-cart.html')
+
+@app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
         task_content = request.form['content']
@@ -23,13 +39,13 @@ def index():
         try:
             db.session.add(new_task)
             db.session.commit()
-            return redirect('/')
+            return redirect('/coffeeshops')
         except:
             return 'there was an issue adding your task'
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
 
-        return render_template('index.html', tasks=tasks)
+        return render_template('shops.html', tasks=tasks)
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -38,7 +54,7 @@ def delete(id):
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
-        return redirect('/')
+        return redirect('/coffeeshops')
     except:
         return 'There was a problem deleting that task'
     
@@ -51,12 +67,12 @@ def update(id):
 
         try:
             db.session.commit()
-            return redirect('/')
+            return redirect('/coffeeshops')
         except:
             return 'There was an issue updating your task'
     else:
         return render_template('update.html', task=task_to_update)
-
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
