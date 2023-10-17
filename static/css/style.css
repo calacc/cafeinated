@@ -8,7 +8,7 @@ html{
 }
 body{
 	margin:0;
-	background: linear-gradient(111deg, #500000 -13.81%, #D1913C 110.5%);
+	background: #f2ad59;
 	background-size:cover;
 	background-attachment:fixed;
 	height: 100%;
@@ -16,29 +16,29 @@ body{
 
 /*Navigation Bar*/
 .nav{
+  display:flex;
+  justify-content: flex-end;
+  align-items: center;
   list-style:none;
-  margin:0px;
-  padding:0px;
   text-align:right;
-  background: #D1913C;
 }
 .nav li{
   display:inline-block;
-	width:12%;
+	width:15%;
 	margin:0px;
   padding:20px;
 	text-decoration:none;
-	color:#FFFFFF;
 	font-size:18px;
 	font-family: "Lexend-Medium", Helvetica;
 	font-weight:bold;
 }
 .nav a{
+  display: flex;
   text-decoration:none;
 	color:#FFFFFF;
 }
 .nav a:hover{
-	color:#500000;
+	color:#260507;
 }
 
 .cafeinated-logo {
@@ -47,61 +47,6 @@ body{
   height: 45px;
   margin-left: 10px;
   margin-top: 8px;
-}
-.image {
-  width: 800px;
-  height: 800px;
-}
-  
-.image .rectangle {
-  position: absolute;
-  width: 800px;
-  height: 800px;
-  top: 280px;
-  left: 2000px;
-  object-fit: cover;
-}
-
-.label {
-  width: 1013px;
-  height: 276px;
-}
-  
-.label .i-e-poft-de-cafea {
-  position: fixed;
-  top: 0;
-  left: 0;
-  font-family: "Lexend-Medium", Helvetica;
-  font-weight: 400;
-  color: #ffffff;
-  font-size: 90px;
-  letter-spacing: 0;
-  line-height: 92px;
-  top: 550px;
-  left: 1000px;
-}
-.label .f-i-cont-i-afl-mai {
-  position: fixed;
-  top: 0;
-  left: 0;
-  font-family: "Lexend-Bold", Helvetica;
-  font-weight: 400;
-  color: #ffffff;
-  font-size: 37px;
-  letter-spacing: 0;
-  line-height: 92px;
-  white-space: nowrap;
-  top: 850px;
-  left: 1000px;
-}
-
-.label .text-wrapper {
-  font-weight: 500;
-}
-
-.label .span {
-  font-family: "Lexend Giga-Black", Helvetica;
-  font-weight: 900;
 }
 
 #div_tasks{
@@ -122,29 +67,99 @@ body{
   padding: 8px;
 }
 
-#tasks tr:nth-child(even){background-color: #c17138;}
+#tasks tr:nth-child(even){background-color: red;}
 
-#tasks tr:hover {background-color: #D1913C;}
+#tasks tr:hover {background-color: red;}
 
 #tasks th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #6a3103;
+  background-color: green;
   color: white;
 }
 
 .shops-flex-container{
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
+  justify-content:center;
   margin: 10px;
 }
 
 .shops-child{
-  background-color: #c17138;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius:10px;
   width: 200px;
+  height: 100px;
   margin: 10px;
-  text-align: center;
-  line-height: 25px;
+  text-align: left;
   font-size: 15px;
 }
+
+.shops-child .coffee-photo{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 70px;
+  height: 70px;
+  margin-left:5%;
+}
+
+.shops-child .text-wrapper {
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  font-family: "Lexend-Medium", Helvetica;
+  font-weight: 700;
+  color: #260507;
+  font-size: 15px;
+}
+
+.box {
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  margin-top: calc(100% - 90%);;
+}
+.box img {
+  width: 400px;
+  height: 400px;
+}
+
+.box .main-text {
+  font-family: "Lexend-Medium", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 50px;
+  line-height: 50px;
+}
+
+.box .text-wrapper {
+  font-weight: 500;
+}
+
+.box .span {
+  font-family: "Lexend Giga-Black", Helvetica;
+  font-weight: 900;
+}
+
+.box .account-text {
+  font-family: "Lexend-Bold", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 100px;
+}
+
+.box .text-wrapper-2 {
+  font-weight: 700;
+}
+
+.box .text-wrapper-3 {
+  font-family: "Lexend-Regular", Helvetica;
+}
+

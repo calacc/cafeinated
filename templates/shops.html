@@ -14,13 +14,19 @@
     <div class="shops-flex-container">
         {% for task in tasks %}
             <div class="shops-child">
-                <p>{{ task.content }}</p>
-                <p>{{ task.date_created.date() }}</p>
-                <td>
-                    <a href="/delete/{{task.id}}">Delete</a>
-                    <br>
-                    <a href="/update/{{task.id}}">Update</a>
-                </td>
+                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"/>
+                <div class="text-wrapper">
+                    <p>{{ task.content }}</p>
+                    <span>&#9733; 4.2</span>
+                    <p>Vezi mai mult</p>                    
+                    <!-- <p>{{ task.content }}</p>
+                    <p>{{ task.date_created.date() }}</p>
+                    <td>
+                        <a href="/delete/{{task.id}}">Delete</a>
+                        <br>
+                        <a href="/update/{{task.id}}">Update</a>
+                    </td>    -->
+                </div>
             </div>
         {% endfor %}
     </div>
