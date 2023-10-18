@@ -3,9 +3,11 @@
 	margin:0;
 	box-sizing:border-box;
 }
+
 html{
 	scroll-behavior:smooth;
 }
+
 body{
 	margin:0;
 	background: #f2ad59;
@@ -49,6 +51,9 @@ body{
   margin-top: 8px;
 }
 
+/*End of Navigation Bar*/
+
+/*Coffee Shops box*/
 #div_tasks{
   display: flex;
   justify-content: center;
@@ -119,6 +124,7 @@ body{
   font-size: 15px;
 }
 
+/*Main page*/
 .box {
   display: flex;
   justify-content:center;
@@ -162,4 +168,112 @@ body{
 .box .text-wrapper-3 {
   font-family: "Lexend-Regular", Helvetica;
 }
+/*End of Coffee Shops page*/
+
+/*Titles*/
+.label {
+  display:flex;
+  justify-content:flex-start;
+  margin-left:5%;
+  margin-top:2%;
+
+}
+
+.label .text-wrapper {
+  display:flex;
+  justify-content:flex-start;
+  font-family: "Lexend Zetta-Black", Helvetica;
+  font-weight: 900;
+  color: #260507;
+  font-size: 100px;
+}
+
+.about-us-text {
+  display:flex;
+  justify-content:flex-start;
+  font-family: "Lexend-Medium", Helvetica;
+  font-weight: 500;
+  color: #260507;
+  font-size: 20px;
+  margin-left:5%;
+  margin-right: 5%;
+  margin-top:2%;
+}
+
+/*Person Icons*/
+.person .overlap {
+  display: flex;
+  justify-content: center;
+  margin-left:15%;
+  margin-right: 15%;
+}
+
+.person .union {
+  width: 300px;
+  height: 300px;
+}
+
+.person .overlap .text{
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+}
+
+.person .mail-contact {
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  color: #260507;
+  font-size: 20px;
+}
+
+.person .telefon {
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  color: #260507;
+  font-size: 20px;
+}
+.person .text span {
+  margin-right: 8px; 
+}
+
+/*
+.person .text-wrapper {
+  display:flex;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 30px;
+  letter-spacing: 0;
+}
+
+.person .div {
+  display:flex;
+  justify-content:flex-start;
+  margin-left:5%;
+  margin-top:2%;
+  font-family: "Lexend-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #000000;
+  font-size: 34px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.person .span {
+  font-family: "Lexend-SemiBold", Helvetica;
+  font-weight: 600;
+}
+
+.person .text-wrapper-2 {
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  font-family: "Lexend-Bold", Helvetica;
+  font-weight: 700;
+}/*
 
