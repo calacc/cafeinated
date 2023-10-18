@@ -16,19 +16,19 @@ class Todo(db.Model):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('customer/home.html')
 
 @app.route('/about-us')
 def about_us():
-    return render_template('about-us.html')
+    return render_template('customer/about-us.html')
 
 @app.route('/my-account')
 def my_account():
-    return render_template('my-account.html')
+    return render_template('customer/my-account.html')
 
 @app.route('/shopping-cart')
 def shopping_cart():
-    return render_template('shopping-cart.html')
+    return render_template('customer/shopping-cart.html')
 
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
@@ -45,7 +45,7 @@ def index():
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
 
-        return render_template('shops.html', tasks=tasks)
+        return render_template('customer/shops.html', tasks=tasks)
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -71,7 +71,7 @@ def update(id):
         except:
             return 'There was an issue updating your task'
     else:
-        return render_template('update.html', task=task_to_update)
+        return render_template('customer/update.html', task=task_to_update)
     
 
 if __name__ == "__main__":
