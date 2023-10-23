@@ -1,0 +1,22 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Log in</title>
+<h2>Log in to your account</h2>
+<br>
+{% endblock %}
+
+{% block body %}
+
+<form action="/login" method="POST">
+    Email: <input type="text" name="email">
+    <br>
+    Password: <input type="password" name="password">
+    <input type="submit">
+
+</form>
+<br><br>
+<h4>Don't have an account?</h4>
+<a href="/create-account">Create one here!</a>
+
+{% endblock %}

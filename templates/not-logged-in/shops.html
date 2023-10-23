@@ -1,0 +1,43 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Coffee shops</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="content">
+
+    {% if tasks|length < 1 %}
+    <h4>There are no shops:( Create one below!</h4>
+    {% else %}
+    <div class="label"><div class="text-wrapper">Cafenele</div></div>
+    <div class="shops-flex-container">
+        {% for task in tasks %}
+            <div class="shops-child">
+                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"/>
+                <div class="text-wrapper">
+                    <p>{{ task.content }}</p>
+                    <span>&#9733; 4.2</span>
+                    <p>Vezi mai mult</p>                    
+                    <!-- <p>{{ task.content }}</p>
+                    <p>{{ task.date_created.date() }}</p>
+                    <td>
+                        <a href="/delete/{{task.id}}">Delete</a>
+                        <br>
+                        <a href="/update/{{task.id}}">Update</a>
+                    </td>    -->
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form action="/coffeeshops" method="POST" style="text-align: center;">
+        <input type="text" name="content" id="content">
+        <input type="submit" value="Add task">
+    </form>
+
+</div>
+
+{% endblock %}
