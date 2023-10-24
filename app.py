@@ -75,16 +75,17 @@ def logout():
         session.pop('user')
         return redirect('/')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shops.db'
 db = SQLAlchemy(app)
 
-class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
+class Shop(db.Model):
+    name = db.Column(db.String(50), primary_key=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    phone_number = db.Column(db.String(10))
+    address = db.Column(db.String(10))
 
     def __repr__(self):
-        return '<Task %r>' % self.id
+        return '<Shop %r>' % self.name
     
 @app.route('/')
 def home(): 
@@ -114,47 +115,52 @@ def shopping_cart():
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        task_content = request.form['content']
-        new_task = Todo(content=task_content)
+        name = request.form['name']
+        phone_number = request.form['phone_number']
+        address = request.form['address']
+
+        new_shop = Shop(name=name, phone_number=phone_number, address=address)
 
         try:
-            db.session.add(new_task)
+            db.session.add(new_shop)
             db.session.commit()
             return redirect('/coffeeshops')
         except:
-            return 'there was an issue adding your task'
+            return 'there was an issue adding your shop'
     else:
-        tasks = Todo.query.order_by(Todo.date_created).all()
+        shops = Shop.query.order_by(Shop.date_created).all()
         if 'user' in session:
-            return render_template('customer/shops.html', tasks=tasks)
+            return render_template('customer/shops.html', shops=shops)
         else:
-            return render_template('not-logged-in/shops.html', tasks=tasks)
+            return render_template('not-logged-in/shops.html', shops=shops)
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
+@app.route('/delete/<string:name>')
+def delete(name):
+    shop_to_delete = Shop.query.get_or_404(name)
 
     try:
-        db.session.delete(task_to_delete)
+        db.session.delete(shop_to_delete)
         db.session.commit()
         return redirect('/coffeeshops')
     except:
-        return 'There was a problem deleting that task'
+        return 'There was a problem deleting that shop'
     
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task_to_update = Todo.query.get_or_404(id)
+@app.route('/update/<string:name>', methods=['GET', 'POST'])
+def update(name):
+    shop_to_update = Shop.query.get_or_404(name)
 
     if request.method == 'POST':
-        task_to_update.content=request.form['content']
+        shop_to_update.name=request.form['name']
+        shop_to_update.phone_number=request.form['phone_number']
+        shop_to_update.address=request.form['address']
 
         try:
             db.session.commit()
             return redirect('/coffeeshops')
         except:
-            return 'There was an issue updating your task'
+            return 'There was an issue updating your shop'
     else:
-        return render_template('customer/update.html', task=task_to_update)
+        return render_template('customer/update.html', shop=shop_to_update)
     
 
 if __name__ == "__main__":
