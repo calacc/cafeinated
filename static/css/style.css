@@ -54,29 +54,29 @@ body{
 /*End of Navigation Bar*/
 
 /*Coffee Shops box*/
-#div_tasks{
+#div_shops{
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
 }
 
-#tasks {
+#shops {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 500px;
 }
 
-#tasks td, #tasks th {
+#shops td, #shops th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-#tasks tr:nth-child(even){background-color: red;}
+#shops tr:nth-child(even){background-color: red;}
 
-#tasks tr:hover {background-color: red;}
+#shops tr:hover {background-color: red;}
 
-#tasks th {
+#shops th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;

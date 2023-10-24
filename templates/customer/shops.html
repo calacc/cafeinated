@@ -8,34 +8,34 @@
 
 <div class="content">
 
-    {% if tasks|length < 1 %}
+    {% if shops|length < 1 %}
     <h4>There are no shops:( Create one below!</h4>
     {% else %}
     <div class="label"><div class="text-wrapper">Cafenele</div></div>
     <div class="shops-flex-container">
-        {% for task in tasks %}
+        {% for shop in shops %}
             <div class="shops-child">
-                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"/>
+                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}" style="margin-right:5px">
                 <div class="text-wrapper">
-                    <p>{{ task.content }}</p>
+                    <p>{{ shop.name }}</p>
                     <span>&#9733; 4.2</span>
-                    <button data-modal-target="#modal-{{ task.id }}">Vezi mai mult</button> 
-                    <div class="modal" id="modal-{{ task.id }}">
+                    <button data-modal-target="#modal-{{ shop.id }}">Vezi mai mult</button> 
+                    <div class="modal" id="modal-{{ shop.id }}">
                         <div class="modal-header">
-                            <div class="modal-title">{{ task.content }}</div>
+                            <div class="modal-title">{{ shop.name }}</div>
                             <button data-close-button class="close-button">&times;</button>
                         </div>
                         <div class="modal-body">
-                            {{ task.date_created.date() }} <br><br>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem quidem nesciunt ab laboriosam. Molestiae nemo natus saepe quasi, fugit similique modi dolores. Quasi eligendi dignissimos hic recusandae ratione nihil numquam magnam adipisci error beatae excepturi soluta perferendis illo sapiente consectetur quae, modi ut, saepe, placeat laboriosam? Neque debitis provident rerum eius quas cupiditate, perferendis labore sequi nihil maxime eum sunt. Suscipit facere natus, eius debitis rerum doloribus molestiae quae illum similique, ut velit distinctio obcaecati maiores nemo officia quibusdam. Laudantium itaque temporibus odio voluptatem fuga sequi. Id fuga eius, ut sequi similique minima laboriosam eaque ad modi temporibus quaerat neque vero vel veniam fugit voluptate quasi culpa, illum, optio saepe omnis tenetur quidem porro. Temporibus adipisci, minima quidem, reprehenderit, similique illo commodi nulla esse accusamus amet dolore placeat soluta sed. Ea modi distinctio repellendus eos quo tempore et excepturi debitis ut ullam eius tempora voluptatum, obcaecati recusandae quisquam repellat cum fugiat quae? Corporis vel explicabo animi ducimus beatae! Consequuntur veritatis error, dolore magnam voluptatum illum quod, velit necessitatibus, ab aperiam similique quae. <br><br>
+                            Phone number: {{ shop.phone_number }} <br><br>
+                            Address: {{ shop.address }} <br><br>
                             Esse dicta, nobis aperiam nesciunt maxime officia ut sed harum distinctio architecto expedita itaque atque eveniet quia quasi corrupti dolore libero ad sit vel. Similique impedit reiciendis delectus assumenda odit nisi, quia laboriosam, blanditiis dolorum totam a, voluptas atque facere sed! Debitis aperiam alias quidem saepe aut, obcaecati, dolores atque iusto iste similique fugit a ab incidunt numquam nemo voluptas, recusandae ea! Corrupti, sunt. Nostrum exercitationem labore delectus autem tempore culpa nisi quas omnis ut quis. Autem cupiditate eaque deleniti quae incidunt reprehenderit ex, aliquid nam aperiam vero, rerum laborum perspiciatis natus. Eveniet est cum in delectus atque autem sit quisquam tenetur incidunt? Ipsum distinctio deserunt repellendus cum vitae? Repellendus, accusantium laudantium. Recusandae, assumenda. Possimus ipsa ad, distinctio doloribus quia necessitatibus quae. Aut praesentium earum natus consequatur atque cumque? <br><br>
                             Asperiores, nulla voluptates sapiente nemo sequi enim beatae hic velit totam vel. Non cumque voluptate quae a consequuntur hic id blanditiis optio mollitia? Magni commodi hic illo aliquid unde facere impedit reiciendis odit corrupti voluptate ea repellendus eaque aspernatur, itaque animi rerum iste quidem. Sint dolorum, velit soluta impedit ipsam iste error mollitia doloremque minus nulla nemo facilis, nostrum aliquid quam rem. Dolorum aperiam architecto praesentium, est assumenda sed in nihil nobis rem culpa officia iste fugiat. Totam, harum quidem atque laborum earum alias voluptatem fuga praesentium accusamus voluptas eos sed, mollitia ut dignissimos quos. Quos dolor, delectus vitae, nam quidem earum at est magni sapiente error neque, sequi et accusamus. Perferendis, odio ea dolore soluta fuga rem sed qui dolorum quas corrupti, quam obcaecati. Blanditiis earum voluptate ea asperiores commodi perferendis praesentium natus ullam dolores illum. Pariatur dolor nihil quaerat voluptatem dolores natus voluptas sed, rem repellendus quos ducimus.
-                            <p>{{ task.date_created.date() }}</p>
+                            <!-- <br>
                             <td>
-                                <a href="/delete/{{task.id}}">Delete</a>
+                                <a href="/delete/{{shop.name}}">Delete</a>
                                 <br>
-                                <a href="/update/{{task.id}}">Update</a>
-                            </td>   
+                                <a href="/update/{{shop.name}}">Update</a>
+                            </td>    -->
                         </div>
                     </div>
                     <div id="overlay"></div>
@@ -46,8 +46,10 @@
     {% endif %}
 
     <form action="/coffeeshops" method="POST" style="text-align: center;">
-        <input type="text" name="content" id="content">
-        <input type="submit" value="Add task">
+        Coffeeshop name: <input type="text" name="name" id="name"><br>
+        Phone number: <input type="text" name="phone_number" id="phone_number"><br>
+        Address: <input type="text" name="address" id="address"><br>
+        <input type="submit" value="Add shop">
     </form>
 
 </div>
