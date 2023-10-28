@@ -1,0 +1,18 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Create account</title>
+<h2>Create a new account</h2>
+{% endblock %}
+
+{% block body %}
+
+<form action="/create-shop-owner-account" method="POST">
+    Email: <input type="text" name="email">
+    <br>
+    Password: <input type="password" name="password">
+    <input type="submit" action="Create account">
+
+</form>
+
+{% endblock %}
