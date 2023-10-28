@@ -27,7 +27,7 @@ auth = firebase.auth()
 
 app.secret_key = 'secret'
 
-cred = credentials.Certificate("C:\\Users\\calac\\OneDrive\\Desktop\\cafeinated\\coffeeshops.json")
+cred = credentials.Certificate("coffeeshops.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 

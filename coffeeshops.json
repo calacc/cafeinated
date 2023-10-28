@@ -1,30 +1,14 @@
 {
-	"1":
-	{
-		"name": "tucano",
-		"location": "abarnam",
-		"email": "Epic fantasy",
-		"phone_number": "blabla"
-	},
-	"2":
-	{
-		"name": "coffeerize",
-		"location": "abarnam",
-		"email": "Epic fantasy",
-		"phone_number": "blabla"
-	},
-	"3":
-	{
-		"name": "narativ",
-		"location": "abarnam",
-		"email": "Epic fantasy",
-		"phone_number": "blabla"
-	},
-	"4":
-	{
-		"name": "street",
-		"location": "abarnam",
-		"email": "Epic fantasy",
-		"phone_number": "blabla"
-	}
-}
+	"type": "service_account",
+	"project_id": "cafeinated-ab14e",
+	"private_key_id": "d7bd6f97a8754e330993a3722ed4ff8a5959a467",
+	"private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCkWCe7dKt+kEXq\n7aBvBq1WtQQEyD4wDDeRPbYNUL0Fm/QTJre7ZZ9o3TMJ+VYW9sqVi+BlN6CaFmjp\nNOWlENb3jEG6ngJM2WgtbzqP+rB5ueImPC39nBIaUXoqtg/OA+ak0tT+nULnHXza\nAXISTUQyzF9byH9s1JptRTWabWPOsrYodPukzk34DCdE7IdzfHxRA9SF9cQEJmxY\n0j+nZCyDtM5/LV3H+O84nv4CLRlW4xxW+AauBnl58hp8jvNqQ6Q7oJay55u+4pcE\nET70hmE6L9DXiCgpbxHpQyiobPFbyhoccSdkgKjTOuEveqSbMD3W3bCQjHQxYLnp\nV552oduzAgMBAAECggEAAlEr3jy63kHyeml3RZl2gC51LAwWtF63udiA5Jcq0xVr\nz4lQNdgs8zGLMqzNRe2c1ZbvRv4NyZ5fREp2omkmXr8ffh4UMjkuetWCod0K9+xi\n/98BVv4IU06qxkdi2ai8a759OknFU7Taucgjb5afS4gOICEnisVEmB3Nr6uzKIre\ntR4ruUO7RLvcYdYQpyWdSHl/Z/fve8+0ds2vWIJjgGb0ZX7pdAVsCTw4nMAy72fu\nWSwojkUBnP1eMsKNkC2VjPCoMxKZGGFQYXpRVjTHP1lsLabSfEYngARjMkOyBZ5B\nYxKWp9wh+5ETdEeg8RcndEyckNV+AgynGG62n/Z/oQKBgQDUCOMJyQAwR06shT9W\nJ6lhdQDtyIEw2Yr2HNZLhrqV92cCAqbbi80QQxGO//AOsiSj+VJbkYwG5hJtQ3ok\nuufWvTHXc2hAr6NqUxGuhM0UyRfI3qv4P9fLDZUqkd7fUW2l+ts9oErZSo5c5uzA\nj7vUMESlxrsyAYv5MLe8YNFcRQKBgQDGa8tW3RB2OC9RRjO01tUzxROOyLhUEVfI\np/6uz0gPrfp164of5gqbur7KuN7t8GreBEtsYMFoDPPZhDuBdfeVYh2H6WOagvFj\nVESaQ+rEGEAO4MGNQPalkFn8PsIT5JrKNG6lfILgPZNMfxyDbg9pzV4RCYY4Vv1w\noNnFo1sjlwKBgDVfm08OQrbkbEBvNjdIupFms3onm6WhTSKQtbzDSFqRsWNHKZtg\nQJlUWKoncNUyMJj6HKoiJB5kccUBVFDEn7FlZJN4YIjP7ZHJIU1N7pXJ3OvaaW2P\nHJHndGIH4BNU2wYJ9IA5xj2WT+nA013RkJVkJROZx+tZilOK2OVZdboFAoGAanHt\nld3mNOWTTNCScJNHsQwqn9DCQidDppupH3KHwBGfaZ9AbDhmvICEVhCzV4ZAbnZz\nV+LYHs/ECY7MtXjppzQJj53/FybkBFtyqieBTE2OH+0nKHYPW2aDP7UTPMTI3W0f\nZpvTQiUGXmVakI98qU/JBO7NGHBiageAjGxEOmUCgYAygWv67V/HY/sY9f1J3+q6\nFwIoeNYrsGAt/vTmZrhrpm9qBH270YilPUh2eeNspZKZv5tTQxpz+RhfeL/HH/ae\n0+NMcJOb0GewcyANNAqjhhlIIXfodpSgFPJjpNbbGnTv3I9BQwA00LQvKJC1ss0M\nHSHGH/btbrBIYRtXu4Q+aw==\n-----END PRIVATE KEY-----\n",
+	"client_email": "firebase-adminsdk-1ha38@cafeinated-ab14e.iam.gserviceaccount.com",
+	"client_id": "116867358512327242181",
+	"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+	"token_uri": "https://oauth2.googleapis.com/token",
+	"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+	"client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-1ha38%40cafeinated-ab14e.iam.gserviceaccount.com",
+	"universe_domain": "googleapis.com"
+  }
+  
