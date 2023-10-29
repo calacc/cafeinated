@@ -7,6 +7,7 @@ from firebase import firebase
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+# import FieldFilter
 
 app = Flask(__name__)
 
@@ -35,6 +36,30 @@ def get_user_type(email):
     user_ref = db.collection(u'Users').document(email)
     user_data = user_ref.get().to_dict()
     return user_data.get('type')
+
+def create_new_user(email, type):
+    new_user={
+        'email': email,
+        'type': type,
+    }
+    doc_ref= db.collection(u'Users').document(new_user['email'])
+    doc_ref.set(new_user)
+
+def create_new_shop(name, address, phone_nr, owner):
+    new_shop={
+        'address': address,
+        'name': name, 
+        'owner': owner,
+        'phone_nr': phone_nr
+    }
+    doc_ref=db.collection(u'Shops').document(new_shop['name'])
+    doc_ref.set(new_shop)
+
+def get_shop_data(name):
+    user_ref = db.collection(u'Shops').document(name)
+    user_data = user_ref.get().to_dict()
+    return user_data
+
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shops.db'
 # db = SQLAlchemy(app)
@@ -70,12 +95,7 @@ def create_customer_account():
             user=auth.create_user_with_email_and_password(email, password)
             user=auth.sign_in_with_email_and_password(email, password)
             
-            new_user={
-                'email': email,
-                'type': 'customer'
-            }
-            doc_ref= db.collection(u'Users').document(new_user['email'])
-            doc_ref.set(new_user)
+            create_new_user(email, 'customer')
 
             session['user']=email
             return redirect('/')
@@ -94,12 +114,7 @@ def create_shop_owner_account():
             user=auth.create_user_with_email_and_password(email, password)
             user=auth.sign_in_with_email_and_password(email, password)
             
-            new_user={
-                'email': email,
-                'type': 'shop-owner'
-            }
-            doc_ref = db.collection(u'Users').document(new_user['email'])
-            doc_ref.set(new_user)
+            create_new_user(email, 'shop-owner')
 
             session['user']=email
             return redirect('/')
@@ -168,31 +183,41 @@ def my_account():
 def shopping_cart():
     return render_template('customer/shopping-cart.html')
 
-# @app.route('/coffeeshops', methods=['POST', 'GET'])
-# def index():
-#     if request.method == 'POST':
-#         name = request.form['name']
-#         phone_number = request.form['phone_number']
-#         address = request.form['address']
+@app.route('/my-shops', methods=['POST', 'GET'])
+def my_shops():
+    if request.method == 'POST':
+        name = request.form['name']
+        phone_number = request.form['phone_number']
+        address = request.form['address']
 
-#         new_shop = Shop(name=name, phone_number=phone_number, address=address)
+        create_new_shop(name, address, phone_number, session['user'])
+        return redirect('/my-shops')
 
-#         try:
-#             db.session.add(new_shop)
-#             db.session.commit()
-#             return redirect('/coffeeshops')
-#         except:
-#             return 'there was an issue adding your shop'
-#     else:
-#         shops = Shop.query.order_by(Shop.date_created).all()
-#         if 'user' in session:
-#             user_type = get_user_type(session['user'])
-#             if user_type=='customer':
-#                 return render_template('customer/shops.html')
-#             elif user_type=='shop-owner':
-#                 return render_template('shop-owner/shops.html')
-#         else:
-            # return render_template('not-logged-in/shops.html', shops=shops)
+    else:
+
+        shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+        shops={}
+        for shop in shops_stream:
+            shop_data=shop.to_dict()
+            shops[shop_data['name']]=shop_data
+        return render_template('shop-owner/my-shops.html', shops=shops)
+
+@app.route('/coffeeshops', methods=['POST', 'GET'])
+def index():
+    shops_stream = db.collection("Shops").stream()
+    shops={}
+    for shop in shops_stream:
+        shop_data=shop.to_dict()
+        shops[shop_data['name']]=shop_data
+
+    if 'user' in session:
+        user_type = get_user_type(session['user'])
+        if user_type=='customer':
+            return render_template('customer/shops.html', shops=shops)
+        elif user_type=='shop-owner':
+            return render_template('shop-owner/shops.html', shops=shops)
+    else:
+        return render_template('not-logged-in/shops.html', shops=shops)
 
 # @app.route('/delete/<string:name>')
 # def delete(name):

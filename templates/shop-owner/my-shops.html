@@ -1,4 +1,4 @@
-{% extends 'not-logged-in/base.html' %}
+{% extends 'shop-owner/base.html' %}
 
 {% block head %}
 <title>Coffee shops</title>
@@ -28,11 +28,6 @@
                             Esse dicta, nobis aperiam nesciunt maxime officia ut sed harum distinctio architecto expedita itaque atque eveniet quia quasi corrupti dolore libero ad sit vel. Similique impedit reiciendis delectus assumenda odit nisi, quia laboriosam, blanditiis dolorum totam a, voluptas atque facere sed! Debitis aperiam alias quidem saepe aut, obcaecati, dolores atque iusto iste similique fugit a ab incidunt numquam nemo voluptas, recusandae ea! Corrupti, sunt. Nostrum exercitationem labore delectus autem tempore culpa nisi quas omnis ut quis. Autem cupiditate eaque deleniti quae incidunt reprehenderit ex, aliquid nam aperiam vero, rerum laborum perspiciatis natus. Eveniet est cum in delectus atque autem sit quisquam tenetur incidunt? Ipsum distinctio deserunt repellendus cum vitae? Repellendus, accusantium laudantium. Recusandae, assumenda. Possimus ipsa ad, distinctio doloribus quia necessitatibus quae. Aut praesentium earum natus consequatur atque cumque? <br><br>
                             Asperiores, nulla voluptates sapiente nemo sequi enim beatae hic velit totam vel. Non cumque voluptate quae a consequuntur hic id blanditiis optio mollitia? Magni commodi hic illo aliquid unde facere impedit reiciendis odit corrupti voluptate ea repellendus eaque aspernatur, itaque animi rerum iste quidem. Sint dolorum, velit soluta impedit ipsam iste error mollitia doloremque minus nulla nemo facilis, nostrum aliquid quam rem. Dolorum aperiam architecto praesentium, est assumenda sed in nihil nobis rem culpa officia iste fugiat. Totam, harum quidem atque laborum earum alias voluptatem fuga praesentium accusamus voluptas eos sed, mollitia ut dignissimos quos. Quos dolor, delectus vitae, nam quidem earum at est magni sapiente error neque, sequi et accusamus. Perferendis, odio ea dolore soluta fuga rem sed qui dolorum quas corrupti, quam obcaecati. Blanditiis earum voluptate ea asperiores commodi perferendis praesentium natus ullam dolores illum. Pariatur dolor nihil quaerat voluptatem dolores natus voluptas sed, rem repellendus quos ducimus.
 
-                            <!-- <td>
-                                <a href="/delete/{{shop_name}}">Delete</a>
-                                <br>
-                                <a href="/update/{{shop_name}}">Update</a>
-                            </td>    -->
                         </div>
                     </div>
                     <div id="overlay"></div>
@@ -40,7 +35,14 @@
             </div>
             {% endfor %}
     </div>
-
+    
+    <form action="/my-shops" method="POST" style="text-align: center;">
+        Coffeeshop name: <input type="text" name="name" id="name"><br>
+        Phone number: <input type="text" name="phone_number" id="phone_number"><br>
+        Address: <input type="text" name="address" id="address"><br>
+        <input type="submit" value="Add shop">
+    </form>
 </div>
+
 
 {% endblock %}
