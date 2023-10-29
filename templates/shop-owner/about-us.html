@@ -1,0 +1,46 @@
+{% extends 'shop-owner/base.html' %}
+
+{% block head %}
+<title>About us</title>
+{% endblock %}
+
+{% block body %}
+<div class="label"><div class="text-wrapper">Despre noi</div></div>
+
+    <p class="about-us-text">
+        Pe site-ul nostru, vei găsi o gamă variată de cafea de la cafenelele din Timișoara. Poți alege dintre diferite
+        tipuri de cafea, precum espresso, cappuccino, latte și multe altele. <br />Pe lângă cafea, site-ul nostru oferă
+        și o serie de avantaje pentru persoanele care își creează un cont, cum ar fi oferta “5 + 1 gratis” sau alte
+        oferte speciale săptămânal. <br />Plasarea unei comenzi pe site-ul nostru este foarte simplă și convenabilă.
+        Alegi cafeneaua preferată (sau cea mai apropiată de tine), selectezi cafeaua pe care o dorești și comanzi. Plata
+        de poate face cash sau cu cardul, iar livrarea se face rapid, în cutiile noastre speciale, astfel încât să
+        puteți savura cafeaua dumneavoastră caldă cât mai curând posibil. <br/>Pentru mai multe detalii, nu ezita să ne
+        contactezi!
+    </p>
+
+<div class="person">
+    <div class="overlap">
+        <img class="union" src="{{ url_for('static', filename='img/union.svg') }}"/>
+        <div class = "text">
+            <p class="mail-contact">
+                <span class="text-wrapper">Mail:</span> <span class="span"> contact@cafeinated.ro</span>
+            </p>
+            <p class="telefon">
+                <span class="text-wrapper">Telefon:</span>
+                <span class="text-wrapper-2">0761234567</span>
+            </p>
+        </div>
+        <img class="union" src="{{ url_for('static', filename='img/union.svg') }}"/>
+        <div class = "text">
+            <p class="mail-contact">
+                <span class="text-wrapper">Mail:</span> <span class="span"> contact@cafeinated.ro</span>
+            </p>
+            <p class="telefon">
+                <span class="text-wrapper">Telefon:</span>
+                <span class="text-wrapper-2">0761234567</span>
+            </p>
+        </div>
+        <!-- <div class="div">Pula în cur</div> -->
+    </div>
+</div>
+{% endblock %}

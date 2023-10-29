@@ -1,0 +1,43 @@
+{% extends 'shop-owner/base.html' %}
+
+{% block head %}
+<title>shopmaster</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="content">
+
+    {% if shops|length < 1 %}
+    <h4>There are no shops:( Create one below!</h4>
+    {% else %}
+    <div id="div_shops">
+    <table id="shops">
+        <tr>
+            <th>shop</th>
+            <th>Added</th>
+            <th>Actions</th>
+        </tr>
+        {% for shop in shops %}
+            <tr>
+                <td>{{ shop.content }}</td>
+                <td>{{ shop.date_created.date() }}</td>
+                <td>
+                    <a href="/delete/{{shop.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{shop.id}}">Update</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% endif %}
+
+    <form action="/" method="POST" style="text-align: center;">
+        <input type="text" name="content" id="content">
+        <input type="submit" value="Add shop">
+    </form>
+
+</div>
+
+{% endblock %}
