@@ -2,17 +2,17 @@
 
 {% block head %}
 <title>Create account</title>
-<h2>Create a new account</h2>
 {% endblock %}
 
 {% block body %}
+<div class="label"><div class="text-wrapper">Creează-ți un cont de client</div>
 
+<div class="account">
 <form action="/create-customer-account" method="POST" autocomplete="off">
-    Email: <input type="text" name="email">
+    E-mail: <input type="text" name="email">
     <br>
-    Password: <input type="password" name="password">
-    <input type="submit" action="Create account">
-
+    Parolă: <input type="password" name="password">
+    <input type="submit" class="submit" action="Create account">
+</div>
 </form>
-
 {% endblock %}

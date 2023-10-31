@@ -172,11 +172,10 @@ body{
 
 /*Titles*/
 .label {
-  display:flex;
+  display:column;
   justify-content:flex-start;
   margin-left:5%;
   margin-top:2%;
-
 }
 
 .label .text-wrapper {
@@ -236,46 +235,102 @@ body{
   margin-right: 8px; 
 }
 
-/*
-.person .text-wrapper {
+/*account*/
+.account
+{
   display:flex;
-  flex-direction: row;
-  align-items: flex-start;
-  text-align: left;
+  justify-content:flex-start;
+  margin-left:50px;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.create_account
+{
+  display:column;
+  justify-content:flex-start;
+  margin-top:2%;
+  margin-left:50px;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.create_account .not_account 
+{
+  display:flex;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 400;
+  margin-top:10px;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.create_account .not_account_coffee 
+{
+  display:flex;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 400;
+  margin-top:10px;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+a
+{
+  text-decoration: none;
+  color:#260507
+}
+
+.create_account .text-wrapper
+{
   font-family: "Lexend-Regular", Helvetica;
   font-weight: 400;
   color: #ffffff;
-  font-size: 30px;
-  letter-spacing: 0;
+  font-size: 25px;
 }
 
-.person .div {
-  display:flex;
-  justify-content:flex-start;
-  margin-left:5%;
-  margin-top:2%;
-  font-family: "Lexend-SemiBold", Helvetica;
-  font-weight: 600;
-  color: #000000;
-  font-size: 34px;
-  letter-spacing: 0;
-  line-height: normal;
-  white-space: nowrap;
-}
-
-.person .span {
-  font-family: "Lexend-SemiBold", Helvetica;
-  font-weight: 600;
-}
-
-.person .text-wrapper-2 {
-  display:flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+.create_account .span 
+{
   font-family: "Lexend-Bold", Helvetica;
+  font-weight: 800;
+}
+
+input {
+  display:flex;
+  margin-top:10px;
+  justify-content:flex-start;
+  background-color: #d1913c80;
+  border-radius: 52px;
+  font-family: "Lexend-Regular", Helvetica;
   font-weight: 700;
-}*/
+  font-size: 30px;
+  color: #4f0000;
+  width: 300px;
+  height: 40px;
+}
+
+input[type=text] {
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  color: #260507;
+}
+
+.submit
+{
+  display:flex;
+  justify-content:center;
+  background-color: #260507;
+  margin-top:20px;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  width: 110px;
+  height: 50px;
+  font-size: 20px;
+  color: white;
+  border-radius: 34px;
+}
 
 /* popup page stuff */
 .modal{
@@ -285,11 +340,12 @@ body{
   transform: translate(-50%, -50%) scale(0);
   transition: 200ms ease-in-out;
   border: 1.5px solid #260507;
-  border-radius: 10px;
+  border-radius: 35px;
+  background-color:white;
+  opacity: 0.7;
   z-index: 10;
-  background-color: #e5ac67;
-  height: 80%;
-  width: 80%;
+  height: 40%;
+  width: 50%;
 }
 
 .modal.active{
