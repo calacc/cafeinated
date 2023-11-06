@@ -1,7 +1,7 @@
 import os
-from flask import Flask, redirect, render_template, request, url_for, session, abort
+from flask import Flask, flash, redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+import datetime
 import pyrebase
 from firebase import firebase
 import firebase_admin
@@ -52,14 +52,20 @@ def create_new_shop(name, address, phone_nr, owner):
         'owner': owner,
         'phone_nr': phone_nr
     }
-    doc_ref=db.collection(u'Shops').document(new_shop['name'])
+    
+    doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
     doc_ref.set(new_shop)
 
-def get_shop_data(name):
-    user_ref = db.collection(u'Shops').document(name)
-    user_data = user_ref.get().to_dict()
-    return user_data
-
+def create_new_menu_item(item_name, price, item_type, shop_id):
+    current_date = datetime.date.today()
+    new_item={
+        'name': item_name,
+        'price': price, 
+        'type': item_type,
+        'date_added': datetime.datetime(current_date.year, current_date.month, current_date.day)
+    }
+    shop_ref=db.collection(u'Shops').document(shop_id)
+    shop_ref.collection('menu').add(new_item)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shops.db'
 # db = SQLAlchemy(app)
@@ -186,12 +192,23 @@ def shopping_cart():
 @app.route('/my-shops', methods=['POST', 'GET'])
 def my_shops():
     if request.method == 'POST':
-        name = request.form['name']
-        phone_number = request.form['phone_number']
-        address = request.form['address']
+        form_type = request.form['form_type']
+        if form_type=='add_shop':
+            name = request.form['name']
+            phone_number = request.form['phone_number']
+            address = request.form['address']
 
-        create_new_shop(name, address, phone_number, session['user'])
-        return redirect('/my-shops')
+            create_new_shop(name, address, phone_number, session['user'])
+            return redirect('/my-shops')
+        
+        elif form_type=='add_menu_item':
+            item_name = request.form['item_name']
+            price = request.form['price']
+            item_type = request.form['item_type']
+            shop_id = request.form['shop_id']
+
+            create_new_menu_item(item_name, price, item_type, shop_id)
+            return redirect('/my-shops')
 
     else:
 
@@ -199,8 +216,15 @@ def my_shops():
         shops={}
         for shop in shops_stream:
             shop_data=shop.to_dict()
-            shops[shop_data['name']]=shop_data
-        return render_template('shop-owner/my-shops.html', shops=shops)
+            shop_id=shop_data['name'].replace(" ", "")
+            menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+            shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+            shops[shop_id]=shop_data
+
+        current_date = datetime.date.today()
+        todays_date=datetime.datetime(current_date.year, current_date.month, current_date.day)
+        return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date)
 
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
@@ -208,7 +232,11 @@ def index():
     shops={}
     for shop in shops_stream:
         shop_data=shop.to_dict()
-        shops[shop_data['name']]=shop_data
+        shop_id=shop_data['name'].replace(" ", "")
+        menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+        shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+        shops[shop_id]=shop_data
 
     if 'user' in session:
         user_type = get_user_type(session['user'])
