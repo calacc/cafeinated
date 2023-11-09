@@ -32,9 +32,9 @@
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='coffee' %}
                                     <li>{{ menu_item.name }} - ${{ menu_item.price }}
-                                        <!-- {% if menu_item['date_added']==todays_date %}
-                                        !!!!!
-                                        {%endif%} -->
+                                        {% if menu_item.date_added==todays_date %}
+                                        ★ New ★
+                                        {%endif%}
                                     </li>
                                     {% endif %}
                                 {% endfor %}
@@ -45,22 +45,22 @@
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
                                     <li>{{ menu_item.name }} - ${{ menu_item.price }}
-                                        <!-- {% if menu_item['date_added']==todays_date %}
-                                        !!!!!
-                                        {%endif%} -->
+                                        {% if menu_item.date_added==todays_date %}
+                                        ★ New ★
+                                        {%endif%}
                                     </li>
                                     <!-- Add additional menu item fields as needed -->
                                     {% endif %}
                                 {% endfor %}
                             </ul>
 
-                            <form action="/my-shops" method="POST" style="all: unset;">
+                            <form action="/my-shops" method="POST" style="font-weight: 700; font-size: 15px; ">
                                 Item name: <input type="text" name="item_name" id="item_name"><br>
                                 Price: <input type="text" name="price" id="price"><br>
                                 Item type: <input type="text" name="item_type" id="item_type"><br>
                                 <input type="hidden" name="form_type" value="add_menu_item">
                                 <input type="hidden" name="shop_id" value="{{ shop_name }}">
-                                <input type="submit" value="Add shop">
+                                <input type="submit" value="Add menu item">
                             </form>
                         </div>
                     </div>

@@ -30,8 +30,10 @@
                             <ul style="margin-left:20px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='coffee' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}</li>
-                                    <!-- Add additional menu item fields as needed -->
+                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
+                                        {% if menu_item.date_added==todays_date %}
+                                        ★ New ★
+                                        {%endif%}</li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -40,8 +42,10 @@
                             <ul style="margin-left:20px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}</li>
-                                    <!-- Add additional menu item fields as needed -->
+                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
+                                    {% if menu_item.date_added==todays_date %}
+                                    ★ New ★
+                                    {%endif%}</li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>

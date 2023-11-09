@@ -345,6 +345,7 @@ input[type=text] {
   background-color: #e5ac67;
   height: 80%;
   width: 80%;
+  overflow: auto;
 }
 
 .modal.active{

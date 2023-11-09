@@ -58,11 +58,13 @@ def create_new_shop(name, address, phone_nr, owner):
 
 def create_new_menu_item(item_name, price, item_type, shop_id):
     current_date = datetime.date.today()
+    date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
+    date_added = ' '.join(date_list)
     new_item={
         'name': item_name,
         'price': price, 
         'type': item_type,
-        'date_added': datetime.datetime(current_date.year, current_date.month, current_date.day)
+        'date_added': date_added
     }
     shop_ref=db.collection(u'Shops').document(shop_id)
     shop_ref.collection('menu').add(new_item)
@@ -223,7 +225,9 @@ def my_shops():
             shops[shop_id]=shop_data
 
         current_date = datetime.date.today()
-        todays_date=datetime.datetime(current_date.year, current_date.month, current_date.day)
+        date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
+        todays_date = ' '.join(date_list)
+        print(todays_date)
         return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date)
 
 @app.route('/coffeeshops', methods=['POST', 'GET'])
