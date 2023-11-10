@@ -6,4 +6,18 @@
 
 {% block body %}
 
+{% if cart %}
+    <ul>
+        {% for item in cart %}
+            <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+        {% endfor %}
+    </ul>
+    <form action="/place-order" method="POST">
+        <input type="hidden" name="form_type" value="place_order">
+        <button type="submit">Place Order</button>
+    </form>
+{% else %}
+    <p>Your shopping cart is empty.</p>
+{% endif %}
+
 {% endblock %}
