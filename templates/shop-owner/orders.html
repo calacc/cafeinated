@@ -1,0 +1,31 @@
+{% extends 'shop-owner/base.html' %}
+
+{% block head %}
+<title>Active orders</title>
+{% endblock %}
+
+{% block body %}
+
+{% for shop_id, shop_order in shop_orders.items() %}
+    <h2>{{ shop_order['shop_name'] }}</h2>
+    <ul>
+        {% for order in shop_order['orders'] %}
+            <br>
+            {% for item in order['items'] %}
+                <li>{{ item.name }} - ${{ item.price }}</li>
+            {% endfor %}
+
+            <form action="/orders" method="POST">
+                <input type="hidden" name="order_id" value="{{order.order_id}}">
+                <button type="submit">Complete order</button>
+            </form>
+
+            <hr style="width:200px">
+
+
+        {% endfor %}
+    </ul>
+    <br>
+{% endfor %}
+
+{% endblock %}

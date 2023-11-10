@@ -30,10 +30,21 @@
                             <ul style="margin-left:20px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='coffee' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
-                                    {% if menu_item.date_added==todays_date %}
-                                    ★ New ★
-                                    {%endif%}
+                                    <li style="display:flex; flex-direction: row;">
+                                        <div>{{ menu_item.name }} - ${{ menu_item.price }}</div>
+                                        <div>
+                                        {% if menu_item.date_added==todays_date %}
+                                        ★ New ★
+                                        {%endif%}
+                                        </div>
+                                        <div>
+                                        <form action="/add-to-cart" method="POST">
+                                            <input type="hidden" name="item_name" value="{{ menu_item.name }}">
+                                            <input type="hidden" name="item_price" value="{{ menu_item.price }}">
+                                            <input type="hidden" name="shop_name" value="{{ shop_name }}">
+                                            <button type="submit" style="margin-left:5px">+</button>
+                                        </form>
+                                    </div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
@@ -43,10 +54,21 @@
                             <ul style="margin-left:20px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
+                                    <li style="display:flex; flex-direction: row;">
+                                        <div>{{ menu_item.name }} - ${{ menu_item.price }}</div>
+                                        <div>
                                         {% if menu_item.date_added==todays_date %}
                                         ★ New ★
                                         {%endif%}
+                                        </div>
+                                        <div>
+                                        <form action="/add-to-cart" method="POST">
+                                            <input type="hidden" name="item_name" value="{{ menu_item.name }}">
+                                            <input type="hidden" name="item_price" value="{{ menu_item.price }}">
+                                            <input type="hidden" name="shop_name" value="{{ shop_name }}">
+                                            <button type="submit" style="margin-left:5px">+</button>
+                                        </form>
+                                    </div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}

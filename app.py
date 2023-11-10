@@ -1,4 +1,5 @@
 import os
+import uuid
 from flask import Flask, flash, redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 import datetime
@@ -37,11 +38,22 @@ def get_user_type(email):
     user_data = user_ref.get().to_dict()
     return user_data.get('type')
 
-def create_new_user(email, type):
-    new_user={
-        'email': email,
-        'type': type,
-    }
+def create_new_user(address, email, name, phonenr, type):
+    if type=='customer':
+        new_user={
+            'address': address,
+            'email': email,
+            'name': name,
+            'phonenr': phonenr,
+            'type': type,
+        }
+    else:
+        new_user={
+            'email': email,
+            'name': name,
+            'phonenr': phonenr,
+            'type': type,
+        }
     doc_ref= db.collection(u'Users').document(new_user['email'])
     doc_ref.set(new_user)
 
@@ -69,21 +81,85 @@ def create_new_menu_item(item_name, price, item_type, shop_id):
     shop_ref=db.collection(u'Shops').document(shop_id)
     shop_ref.collection('menu').add(new_item)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shops.db'
-# db = SQLAlchemy(app)
-
-
-# class Shop(db.Model):
-#     name = db.Column(db.String(50), primary_key=True)
-#     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-#     phone_number = db.Column(db.String(10))
-#     address = db.Column(db.String(10))
-#     owner = db.Column(db.String(50))
-
-#     def __repr__(self):
-#         return '<Shop %r>' % self.name
+@app.route('/delete-account', methods=['POST'])
+def delete_account():
+    if 'user' in session:
+        if request.method=='POST':
+            user_to_delete=session['user']
+            session.pop('cart', None)
+            session.pop('user')
+            doc_ref = db.collection(u'Users').document(user_to_delete)
+            doc_ref.delete()
+    return redirect('/')
     
-    
+
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
+    item_name = request.form['item_name']
+    item_price = float(request.form['item_price'])
+    shop_name = request.form['shop_name']
+
+    if 'cart' not in session:
+        session['cart'] = []
+
+    cart_copy = session['cart'].copy()
+    cart_copy.append({'name': item_name, 'price': item_price, 'shop': shop_name})
+
+    session['cart'] = cart_copy
+
+    return redirect('/coffeeshops')  
+
+@app.route('/shopping-cart')
+def shopping_cart():
+    cart = session.get('cart', [])
+    print(f"Cart items: {cart}")
+    return render_template('customer/shopping-cart.html', cart=cart)
+
+@app.route('/place-order', methods=['POST'])
+def place_order():
+
+    user_id = session['user'] 
+    cart = session.get('cart', [])
+    order_id = str(uuid.uuid4())
+
+    order_data = {
+        'user_id': user_id,
+        'items': cart,
+        'status': False,
+        'order_id': order_id,
+    }
+    order_ref = db.collection('Orders').add(order_data)
+    session.pop('cart', None)
+
+    return redirect('/')
+
+@app.route('/orders', methods=['GET'])
+def active_orders():
+    active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
+
+    shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+    owned_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
+
+    shop_orders = {shop_id: {'shop_name': shop_data['name'], 'orders': []} for shop_id, shop_data in owned_shops.items()}
+
+    for order in active_orders:
+        for item in order['items']:
+            if item['shop'] in owned_shops:
+                shop_id = item['shop']
+                shop_orders[shop_id]['orders'].append(order)
+
+    return render_template('shop-owner/orders.html', shop_orders=shop_orders)
+
+@app.route('/orders', methods=['POST'])
+def complete_order():
+    order_id=request.form['order_id']
+    order_ref = db.collection('Orders').where('order_id', '==', order_id).limit(1)
+    orders = order_ref.get()
+    order_doc = orders[0]
+    order_doc.reference.update({'status': True})
+    print(f"Order {order_id} completed successfully.")
+    return redirect('/orders')
+
 def login_is_required(function):
     def wrapper(*args, **kwargs):
         if 'user' not in session:
@@ -92,18 +168,53 @@ def login_is_required(function):
             return function()
     return wrapper
 
+@app.route('/edit-account', methods=['POST', 'GET'])
+def edit_account():
+    user_type = get_user_type(session['user'])
+    user_ref = db.collection(u'Users').document(session['user'])
+    user_data = user_ref.get().to_dict()
+    if  request.method == 'POST':
+        updated_user={}
+        if user_type=='customer':
+            address = request.form['address']
+            name = request.form['name']
+            phonenr = request.form['phonenr']
+            updated_user={
+                'address': address,
+                'name': name,
+                'phonenr': phonenr,
+            }
+        elif user_type=='shop-owner':
+            name = request.form['name']
+            phonenr = request.form['phonenr']
+            updated_user={
+                'name': name,
+                'phonenr': phonenr,
+            }
+        doc_ref= db.collection(u'Users').document(session['user'])
+        doc_ref.update(updated_user)
+        return redirect('/my-account')
+    else:
+        if user_type=='customer':
+            return render_template('customer/edit-account.html', user_data=user_data)
+        elif user_type=='shop-owner':
+            return render_template('shop-owner/edit-account.html', user_data=user_data)
+
 @app.route('/create-customer-account', methods=['POST','GET'])
 def create_customer_account():
     if('user' in session):
         return redirect('/')
     if request.method=='POST':
+        address = request.form.get('address')
         email = request.form.get('email')
+        name = request.form.get('name')
         password = request.form.get('password')
+        phonenr = request.form.get('phonenr')
         try:
             user=auth.create_user_with_email_and_password(email, password)
             user=auth.sign_in_with_email_and_password(email, password)
             
-            create_new_user(email, 'customer')
+            create_new_user(address, email, name, phonenr, 'customer')
 
             session['user']=email
             return redirect('/')
@@ -117,12 +228,14 @@ def create_shop_owner_account():
         return redirect('/')
     if request.method=='POST':
         email = request.form.get('email')
+        name = request.form.get('name')
         password = request.form.get('password')
+        phonenr = request.form.get('phonenr')
         try:
             user=auth.create_user_with_email_and_password(email, password)
             user=auth.sign_in_with_email_and_password(email, password)
             
-            create_new_user(email, 'shop-owner')
+            create_new_user('', email, name, phonenr, 'shop-owner')
 
             session['user']=email
             return redirect('/')
@@ -147,10 +260,11 @@ def login():
     else:
         return render_template('not-logged-in/login.html')
 
-@app.route('/logout', endpoint='user logs out from this page')
+@app.route('/logout')
 @login_is_required
 def logout():
     if 'user' in session:
+        session.pop('cart', None)
         session.pop('user')
         return redirect('/')
     
@@ -164,7 +278,6 @@ def home():
             return render_template('shop-owner/home.html')
     else:
         return render_template('not-logged-in/home.html')
-
 
 @app.route('/about-us')
 def about_us():
@@ -181,15 +294,12 @@ def about_us():
 @login_is_required
 def my_account():
     user_type = get_user_type(session['user'])
+    user_ref = db.collection(u'Users').document(session['user'])
+    user_data = user_ref.get().to_dict()
     if user_type=='customer':
-        return render_template('customer/my-account.html')
+        return render_template('customer/my-account.html', user_data=user_data)
     elif user_type=='shop-owner':
-        return render_template('shop-owner/my-account.html')
-
-@app.route('/shopping-cart', endpoint='customer\'s shopping cart page')
-@login_is_required
-def shopping_cart():
-    return render_template('customer/shopping-cart.html')
+        return render_template('shop-owner/my-account.html', user_data=user_data)
 
 @app.route('/my-shops', methods=['POST', 'GET'])
 def my_shops():
@@ -250,35 +360,6 @@ def index():
             return render_template('shop-owner/shops.html', shops=shops)
     else:
         return render_template('not-logged-in/shops.html', shops=shops)
-
-# @app.route('/delete/<string:name>')
-# def delete(name):
-#     shop_to_delete = Shop.query.get_or_404(name)
-
-#     try:
-#         db.session.delete(shop_to_delete)
-#         db.session.commit()
-#         return redirect('/coffeeshops')
-#     except:
-#         return 'There was a problem deleting that shop'
     
-# @app.route('/update/<string:name>', methods=['GET', 'POST'])
-# def update(name):
-#     shop_to_update = Shop.query.get_or_404(name)
-
-#     if request.method == 'POST':
-#         shop_to_update.name=request.form['name']
-#         shop_to_update.phone_number=request.form['phone_number']
-#         shop_to_update.address=request.form['address']
-
-#         try:
-#             db.session.commit()
-#             return redirect('/coffeeshops')
-#         except:
-#             return 'There was an issue updating your shop'
-#     else:
-#         return render_template('customer/update.html', shop=shop_to_update)
-    
-
 if __name__ == "__main__":
     app.run(port=1111,debug=True)
