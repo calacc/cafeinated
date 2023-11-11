@@ -49,7 +49,7 @@ def generate_map_embed_code(address):
     coordinates = geocode_address(address)
 
     if coordinates:
-        return f'<iframe width="600" height="450" frameborder="0" style="border:0" ' \
+        return f'<iframe width="600" height="450" frameborder="0" style="border:0; border-radius:10px" ' \
             f'src="https://www.google.com/maps/embed/v1/view?key=AIzaSyA4YbofL5tc2as0qsmjv3yDc556NaD3usE&center={coordinates[0]},{coordinates[1]}&zoom=20" allowfullscreen></iframe>'
     else:
         return '<p>Unable to generate map for the provided address.</p>'
@@ -408,7 +408,7 @@ def my_shops():
         date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
         todays_date = ' '.join(date_list)
         print(todays_date)
-        return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date)
+        return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date, generate_map_embed_code=generate_map_embed_code)
 
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
