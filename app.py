@@ -9,6 +9,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from geopy.geocoders import Nominatim
+from collections import defaultdict
 
 
 app = Flask(__name__)
@@ -53,8 +54,6 @@ def generate_map_embed_code(address):
             f'src="https://www.google.com/maps/embed/v1/view?key=AIzaSyA4YbofL5tc2as0qsmjv3yDc556NaD3usE&center={coordinates[0]},{coordinates[1]}&zoom=20" allowfullscreen></iframe>'
     else:
         return '<p>Unable to generate map for the provided address.</p>'
-
-    
 
 def get_user_type(email):
     user_ref = db.collection(u'Users').document(email)
@@ -125,7 +124,7 @@ def add_to_cart():
         session['cart'] = []
 
     cart_copy = session['cart'].copy()
-    cart_copy.append({'name': item_name, 'price': item_price, 'shop': shop_name})
+    cart_copy.append({'name': item_name, 'price': item_price, 'shop': shop_name, 'completed': False})
 
     session['cart'] = cart_copy
 
@@ -175,55 +174,90 @@ def my_orders():
 @app.route('/orders', methods=['GET'])
 def active_orders():
     # active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
+    user_type = get_user_type(session['user'])
+    if user_type=='shop-owner':
+        shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+        owned_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
+        owned_shops_list = list(owned_shops.keys())
 
-    shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
-    owned_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
-    owned_shops_list = list(owned_shops.keys())
-
-    active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
+        active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
 
 
-    shop_content = {shop_id: {'shop_name': shop_data['name'], 'items': []} for shop_id, shop_data in owned_shops.items()}
-    shop_orders={}
+        shop_content = {shop_id: {'shop_name': shop_data['name'], 'items': []} for shop_id, shop_data in owned_shops.items()}
+        shop_orders={}
 
-    for order in active_orders:
-        order_id = order['order_id']
+        for order in active_orders:
+            order_id = order['order_id']
 
-        for item in order['items']:
-            if item['shop'] in owned_shops:
-                shop_id = item['shop']
+            for item in order['items']:
+                if item['shop'] in owned_shops and item['completed']==False:
+                    shop_id = item['shop']
+                    if shop_id not in shop_orders:
+                        shop_orders[shop_id] = {}
+                    if order_id not in shop_orders[shop_id]:
+                        shop_orders[shop_id][order_id] = {'shop_name': shop_content[shop_id]['shop_name'], 'items':[]}
+                    copied_item = item.copy()
+                    shop_orders[shop_id][order_id]['items'].append(copied_item)
+        print(shop_content)
+        return render_template('shop-owner/orders.html', shop_orders=shop_orders)
+    else:
+        active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
 
-                # Initialize shop_orders[shop_id] if it doesn't exist
-                if shop_id not in shop_orders:
-                    shop_orders[shop_id] = {}
+        orders_by_shop = defaultdict(lambda: defaultdict(list))
 
-                # Initialize shop_orders[shop_id][order_id] if it doesn't exist
-                if order_id not in shop_orders[shop_id]:
-                    shop_orders[shop_id][order_id] = shop_content[shop_id].copy()
+        for order in active_orders:
+            shop_name = order.get('shop_name', 'Unknown Shop')
+            items = order.get('items', [])
+            
+            for item in items:
+                orders_by_shop[shop_name][order['order_id']].append(item)
 
-                # Append the item to the appropriate order's items list
-                shop_orders[shop_id][order_id]['items'].append(item.copy())
+        return render_template('delivery/orders.html', active_orders=active_orders,
+                                can_complete_order=can_complete_order,
+                                get_user_address=get_user_address)
 
-    print("Owned Shops List:", owned_shops_list)
-    print("Active Orders:", active_orders)              
-    print(shop_orders)
-    return render_template('shop-owner/orders.html', shop_orders=shop_orders)
+def get_user_address(email):
+    user_ref = db.collection(u'Users').document(email)
+    user_data = user_ref.get().to_dict()
+    return user_data.get('address')
+
+def can_complete_order(order):
+    for item in order['items']:
+        if item['completed']==False:
+            return False
+    return True
+
+#TODO implement 
+@app.route('/orders', methods=['POST'])
+def deliver_order():
+    pass
 
 @app.route('/orders', methods=['POST'])
 def complete_order():
-    order_id=request.form['order_id']
-    shop_id=request.form['shop_id']
-    order_ref = db.collection('Orders').where('order_id', '==', order_id).limit(1)
-    orders = order_ref.get()
-    order_doc = orders[0]
+    user_type = get_user_type(session['user'])
+    if user_type=='shop-owner':
+        order_id=request.form['order_id']
+        shop_id=request.form['shop_id']
+        order_ref = db.collection('Orders').where('order_id', '==', order_id).limit(1)
+        orders = order_ref.get()
+        order_doc = orders[0]
 
-    order_data = order_doc.to_dict()
+        order_data = order_doc.to_dict()
 
-    for item in order_data.get('items', []):
-        if item['shop'] == shop_id:
-            item_index = item['item_index']  
-            order_doc.reference.update({f'items.{item_index}.completed': True})
-
+        count=0
+        for item in order_data.get('items', []):
+            if item['shop'] == shop_id:
+                order_data['items'][count]['completed'] = True
+            count=count+1
+        order_doc.reference.set(order_data)
+    elif user_type=='rider':
+        order_id=request.form['order_id']
+        order_ref = db.collection('Orders').where('order_id', '==', order_id).limit(1)
+        orders = order_ref.get()
+        order_doc = orders[0]
+        order_data = order_doc.to_dict()
+        order_data['status']=True
+        order_doc.reference.set(order_data)
     return redirect('/orders')
 
 def login_is_required(function):
@@ -342,6 +376,8 @@ def home():
             return render_template('customer/home.html')
         elif user_type=='shop-owner':
             return render_template('shop-owner/home.html')
+        elif user_type=='rider':
+            return render_template('delivery/home.html')
     else:
         return render_template('not-logged-in/home.html')
 

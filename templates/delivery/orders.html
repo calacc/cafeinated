@@ -1,0 +1,33 @@
+{% extends 'delivery/base.html' %}
+
+{% block head %}
+<title>Comenzi</title>
+{% endblock %}
+
+{% block body %}
+
+        {% for order in active_orders %}
+            <br>
+            Id:{{order['order_id']}}<br>
+            {% set address = get_user_address(order['user_id']) %}
+            Adresă de livrare: {{address}}<br>
+            Cine o comandat: {{order['user_id']}}
+            {% for item in order['items'] %}
+                <li>{{ item['shop'] }}: {{ item['name'] }} - ${{ item['price'] }}</li>
+            {% endfor %}
+
+            {% if can_complete_order(order) %}
+                <form action="/orders" method="post">
+                    <input type="hidden" name="form_type" value="complete_order">
+                    <input type="hidden" name="order_id" value="{{ order.order_id }}">
+                    <button type="submit">Complete Order</button>
+                </form>
+            {% else %}
+                <button disabled id="danger">Complete Order</button>
+            {% endif %}
+
+            <hr style="width:200px">
+        {% endfor %}
+    </ul>
+
+{% endblock %}
