@@ -6,23 +6,22 @@
 
 {% block body %}
 
-{% for shop_id, shop_order in shop_orders.items() %}
-    <h2>{{ shop_order['shop_name'] }}</h2>
+{% for shop_id, shop_data in shop_orders.items() %}
+    <h2>{{ shop_id }}</h2>
     <ul>
-        {% for order in shop_order['orders'] %}
+        {% for order_id, shop_order in shop_data.items() %}
             <br>
-            {% for item in order['items'] %}
-                <li>{{ item.name }} - ${{ item.price }}</li>
+            {% for item in shop_order['items'] %}
+                <li>{{ item['name'] }} - ${{ item['price'] }}</li>
             {% endfor %}
 
             <form action="/orders" method="POST">
-                <input type="hidden" name="order_id" value="{{order.order_id}}">
+                <input type="hidden" name="order_id" value="{{ order_id }}">
+                <input type="hidden" name="shop_id" value="{{ shop_id }}">
                 <button type="submit">Complete order</button>
             </form>
 
             <hr style="width:200px">
-
-
         {% endfor %}
     </ul>
     <br>

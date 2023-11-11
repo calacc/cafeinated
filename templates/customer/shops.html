@@ -25,6 +25,9 @@
                         <div class="modal-body">
                             Phone number: {{ shop_data.phone_nr }} <br><br>
                             Address: {{ shop_data.address }} <br><br>
+
+                            {{ generate_map_embed_code(shop_data.name + ' Timisoara') | safe }}
+                            <br>
                             Meniu:<br><br>
                             Coffees:<br>
                             <ul style="margin-left:20px; list-style: none;">
@@ -68,7 +71,7 @@
                                             <input type="hidden" name="shop_name" value="{{ shop_name }}">
                                             <button type="submit" style="margin-left:5px">+</button>
                                         </form>
-                                    </div>
+                                        </div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}

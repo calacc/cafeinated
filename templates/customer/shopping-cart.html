@@ -1,23 +1,38 @@
 {% extends 'customer/base.html' %}
 
 {% block head %}
-<title>Shopping cart</title>
+<title>Coșul meu de cumpărături</title>
 {% endblock %}
 
 {% block body %}
 
-{% if cart %}
-    <ul>
-        {% for item in cart %}
-            <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
-        {% endfor %}
-    </ul>
-    <form action="/place-order" method="POST">
-        <input type="hidden" name="form_type" value="place_order">
-        <button type="submit">Place Order</button>
-    </form>
-{% else %}
-    <p>Your shopping cart is empty.</p>
-{% endif %}
+<div style="display: flex; flex-direction: row;">
+
+<div style="padding:20px">
+    <a href="/shopping-cart"><button>Coșul meu de cumpărături</button><br></a>
+    <a href="/my-orders"><button>Comenzile mele</button></a>
+</div>
+<div style="padding:20px">
+    {% if cart %}
+        <ul>
+            {% for item in cart %}
+                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}
+                    <form action="{{ url_for('remove_from_cart', index=loop.index0) }}" method="POST">
+                        <input type="hidden" name="form_type" value="remove_item_from_cart">
+                        <button type="submit">&times;</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <form action="/place-order" method="POST">
+            <input type="hidden" name="form_type" value="place_order">
+            <button type="submit">Trimite comanda!</button>
+        </form>
+    {% else %}
+        <p>Coșul tău de cumpărături este gol!</p>
+    {% endif %}
+</div>
+
+</div>
 
 {% endblock %}

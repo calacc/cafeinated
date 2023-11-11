@@ -62,6 +62,11 @@
                                 <input type="hidden" name="shop_id" value="{{ shop_name }}">
                                 <input type="submit" value="Add menu item">
                             </form>
+                            <form action="/my-shops" method="POST" style="font-weight: 700; font-size: 15px; ">
+                                <input type="hidden" name="form_type" value="delete_shop">
+                                <input type="hidden" name="shop_id" value="{{ shop_name }}">
+                                <input type="submit" value="Delete shop" id="danger">
+                            </form>
                         </div>
                     </div>
                     <div id="overlay"></div>
