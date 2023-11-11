@@ -26,8 +26,10 @@
                                 {{ shop_data.name }}<br>
                             </div>
                             <p class = "address">{{ shop_data.address }}</p>
-                            {{ generate_map_embed_code(shop_data.name + ' Timisoara') | safe }}
-                            <br>
+                            <div style="position:absolute;top:0;right:0;margin:20px;">
+                                {{ generate_map_embed_code(shop_data.name + ' Timisoara') | safe }}
+                            </div>
+                            
                             <p class = "menu">Meniu</p>
                             <p class = "coffees">Coffees:</p>
                             <ul class = "items" style="margin-left:50px; list-style: none;">
@@ -35,7 +37,7 @@
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='coffee' %}
                                     <li style="display:flex; flex-direction: row;">
-                                        <div style="font-size:18px">
+                                        <div style="font-size:18px;">
                                             {% if menu_item.date_added==todays_date %}
                                             ★ New ★&nbsp;
                                             {%endif%}
