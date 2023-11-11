@@ -12,47 +12,69 @@
     <div class="shops-flex-container">
         {% for shop_name, shop_data in shops.items() %}
             <div class="shops-child">
-                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"  style="margin-right:5px">
+                <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}" style="margin-right:5px">
                 <div class="text-wrapper">
                     <p>{{ shop_data.name }}</p>
-                    <span>&#9733; 4.2</span>
-                    <button data-modal-target="#modal-{{ shop_name }}">Vezi mai mult</button> 
+                    Phone number: {{ shop_data.phone_nr }}
+                    Address: {{ shop_data.address }}
+                    <button class = "seemore" data-modal-target="#modal-{{ shop_name }}">Vezi mai mult</button> 
                     <div class="modal" id="modal-{{ shop_name }}">
-                        <div class="modal-header">
-                            <div class="modal-title">{{ shop_data.name }}</div>
-                            <button data-close-button class="close-button">&times;</button>
-                        </div>
+
                         <div class="modal-body">
-                            Phone number: {{ shop_data.phone_nr }} <br><br>
-                            Address: {{ shop_data.address }} <br><br>
-                            Meniu:<br><br>
-                            Coffees:<br>
-                            <ul style="margin-left:20px; list-style: none;">
+                            <div class = "details">
+                                {{ shop_data.name }}<br>
+                            </div>
+                            <p class = "address">{{ shop_data.address }}</p>
+                            <p class = "menu">Meniu</p>
+                            <p class = "coffees">Coffees:</p>
+                            <ul class = "items" style="margin-left:50px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='coffee' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
-                                        {% if menu_item.date_added==todays_date %}
-                                        ★ New ★
-                                        {%endif%}
+                                    <li style="display:flex; flex-direction: row;">
+                                        <div style="font-size:18px">
+                                            {% if menu_item.date_added==todays_date %}
+                                            ★ New ★&nbsp;
+                                            {%endif%}
+                                        </div>
+                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>
+                                        <form action="/add-to-cart" method="POST">
+                                            <input type="hidden" name="item_name" value="{{ menu_item.name }}">
+                                            <input type="hidden" name="item_price" value="{{ menu_item.price }}">
+                                            <input type="hidden" name="shop_name" value="{{ shop_name }}">
+                                        </form>
+                                    </div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
 
-                            Deserts:<br>
-                            <ul style="margin-left:20px; list-style: none;">
+                            <p class = "desserts">Desserts:</p>
+                            <ul class = "items" style="margin-left:50px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
-                                    <li>{{ menu_item.name }} - ${{ menu_item.price }}
-                                    {% if menu_item.date_added==todays_date %}
-                                        ★ New ★
-                                        {%endif%}
+                                    <li style="display:flex; flex-direction: row;">
+                                        <div>
+                                            {% if menu_item.date_added==todays_date %}
+                                            ★ New ★&nbsp;&nbsp;
+                                            {%endif%}
+                                            </div>
+                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>
+                                        <form action="/add-to-cart" method="POST">
+                                            <input type="hidden" name="item_name" value="{{ menu_item.name }}">
+                                            <input type="hidden" name="item_price" value="{{ menu_item.price }}">
+                                            <input type="hidden" name="shop_name" value="{{ shop_name }}">
+                                        </form>
+                                    </div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
-                        </div>
+                        </div> 
+                        <button data-close-button class="close-button">&#10149;</button>    
                     </div>
+                    
                     <div id="overlay"></div>
                 </div>
             </div>
