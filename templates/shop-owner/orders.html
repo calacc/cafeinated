@@ -11,6 +11,7 @@
     <ul>
         {% for order_id, shop_order in shop_data.items() %}
             <br>
+            {{ order_id}}
             {% for item in shop_order['items'] %}
                 <li>{{ item['name'] }} - ${{ item['price'] }}</li>
             {% endfor %}
