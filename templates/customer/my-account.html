@@ -6,10 +6,13 @@
 
 {% block body %}
 
+<div class="label"><div class="text-wrapper">Contul meu</div></div>
+
+<div class="account-details">
 Nume: {{ user_data.name }}<br>
 Număr de telefon: {{ user_data.phonenr }}<br>
 Adresă de livrare: {{ user_data.address }}<br>
-<a href="/edit-account"><button>Editează detaliile contului</button></a>
-
+<a href="/edit-account"><button class = "edit-account">Editează</button></a>
+</div>
 
 {% endblock %}
