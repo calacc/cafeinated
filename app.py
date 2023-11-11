@@ -8,7 +8,8 @@ from firebase import firebase
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-# import FieldFilter
+from geopy.geocoders import Nominatim
+
 
 app = Flask(__name__)
 
@@ -32,6 +33,28 @@ app.secret_key = 'secret'
 cred = credentials.Certificate("coffeeshops.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+# map frame stuff
+
+def geocode_address(address):
+    geolocator = Nominatim(user_agent='cafeinated-ab14e')
+    location = geolocator.geocode(address)
+
+    if location:
+        return location.latitude, location.longitude
+    else:
+        return None
+    
+def generate_map_embed_code(address):
+    coordinates = geocode_address(address)
+
+    if coordinates:
+        return f'<iframe width="600" height="450" frameborder="0" style="border:0" ' \
+            f'src="https://www.google.com/maps/embed/v1/view?key=AIzaSyA4YbofL5tc2as0qsmjv3yDc556NaD3usE&center={coordinates[0]},{coordinates[1]}&zoom=20" allowfullscreen></iframe>'
+    else:
+        return '<p>Unable to generate map for the provided address.</p>'
+
+    
 
 def get_user_type(email):
     user_ref = db.collection(u'Users').document(email)
@@ -91,7 +114,6 @@ def delete_account():
             doc_ref = db.collection(u'Users').document(user_to_delete)
             doc_ref.delete()
     return redirect('/')
-    
 
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
@@ -109,6 +131,13 @@ def add_to_cart():
 
     return redirect('/coffeeshops')  
 
+@app.route('/remove_from_cart/<int:index>', methods=['POST'])
+def remove_from_cart(index):
+    cart_copy = session['cart'].copy()
+    removed_item = cart_copy.pop(index)
+    session['cart'] = cart_copy
+    return redirect('/shopping-cart')
+
 @app.route('/shopping-cart')
 def shopping_cart():
     cart = session.get('cart', [])
@@ -117,7 +146,6 @@ def shopping_cart():
 
 @app.route('/place-order', methods=['POST'])
 def place_order():
-
     user_id = session['user'] 
     cart = session.get('cart', [])
     order_id = str(uuid.uuid4())
@@ -133,31 +161,69 @@ def place_order():
 
     return redirect('/')
 
+@app.route('/my-orders')
+def my_orders():
+    user_type = get_user_type(session['user'])
+    if user_type=='customer':
+        my_orders_active = [order.to_dict() for order in db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', False).stream()]
+        my_orders_inactive = [order.to_dict() for order in db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', True).stream()]
+        
+        return render_template('customer/my-orders.html', my_orders_active=my_orders_active, my_orders_inactive=my_orders_inactive)
+    elif user_type=='shop-owner':
+        pass
+
 @app.route('/orders', methods=['GET'])
 def active_orders():
-    active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
+    # active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
 
     shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
     owned_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
+    owned_shops_list = list(owned_shops.keys())
 
-    shop_orders = {shop_id: {'shop_name': shop_data['name'], 'orders': []} for shop_id, shop_data in owned_shops.items()}
+    active_orders = [order.to_dict() for order in db.collection('Orders').where('status', '==', False).stream()]
+
+
+    shop_content = {shop_id: {'shop_name': shop_data['name'], 'items': []} for shop_id, shop_data in owned_shops.items()}
+    shop_orders={}
 
     for order in active_orders:
+        order_id = order['order_id']
+
         for item in order['items']:
             if item['shop'] in owned_shops:
                 shop_id = item['shop']
-                shop_orders[shop_id]['orders'].append(order)
 
+                # Initialize shop_orders[shop_id] if it doesn't exist
+                if shop_id not in shop_orders:
+                    shop_orders[shop_id] = {}
+
+                # Initialize shop_orders[shop_id][order_id] if it doesn't exist
+                if order_id not in shop_orders[shop_id]:
+                    shop_orders[shop_id][order_id] = shop_content[shop_id].copy()
+
+                # Append the item to the appropriate order's items list
+                shop_orders[shop_id][order_id]['items'].append(item.copy())
+
+    print("Owned Shops List:", owned_shops_list)
+    print("Active Orders:", active_orders)              
+    print(shop_orders)
     return render_template('shop-owner/orders.html', shop_orders=shop_orders)
 
 @app.route('/orders', methods=['POST'])
 def complete_order():
     order_id=request.form['order_id']
+    shop_id=request.form['shop_id']
     order_ref = db.collection('Orders').where('order_id', '==', order_id).limit(1)
     orders = order_ref.get()
     order_doc = orders[0]
-    order_doc.reference.update({'status': True})
-    print(f"Order {order_id} completed successfully.")
+
+    order_data = order_doc.to_dict()
+
+    for item in order_data.get('items', []):
+        if item['shop'] == shop_id:
+            item_index = item['item_index']  
+            order_doc.reference.update({f'items.{item_index}.completed': True})
+
     return redirect('/orders')
 
 def login_is_required(function):
@@ -321,7 +387,11 @@ def my_shops():
 
             create_new_menu_item(item_name, price, item_type, shop_id)
             return redirect('/my-shops')
-
+        elif form_type=='delete_shop':
+            shop_to_delete = request.form['shop_id']
+            doc_ref = db.collection(u'Shops').document(shop_to_delete)
+            doc_ref.delete()
+            return redirect('/my-shops')
     else:
 
         shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
@@ -355,11 +425,11 @@ def index():
     if 'user' in session:
         user_type = get_user_type(session['user'])
         if user_type=='customer':
-            return render_template('customer/shops.html', shops=shops)
+            return render_template('customer/shops.html', shops=shops, generate_map_embed_code=generate_map_embed_code)
         elif user_type=='shop-owner':
-            return render_template('shop-owner/shops.html', shops=shops)
+            return render_template('shop-owner/shops.html', shops=shops, generate_map_embed_code=generate_map_embed_code)
     else:
-        return render_template('not-logged-in/shops.html', shops=shops)
+        return render_template('not-logged-in/shops.html', shops=shops, generate_map_embed_code=generate_map_embed_code)
     
 if __name__ == "__main__":
     app.run(port=1111,debug=True)

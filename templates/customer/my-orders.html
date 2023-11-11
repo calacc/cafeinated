@@ -1,0 +1,50 @@
+{% extends 'customer/base.html' %}
+
+{% block head %}
+<title>Coșul meu de cumpărături</title>
+{% endblock %}
+
+{% block body %}
+
+<div style="display: flex; flex-direction: row;">
+
+<div style="padding:20px">
+    <a href="/shopping-cart"><button>Coșul meu de cumpărături</button><br></a>
+    <a href="/my-orders"><button>Comenzile mele</button></a>
+</div>
+<div style="padding:20px">
+    
+    
+    <h3>Comenzi active:</h3>
+    {% for order in my_orders_active %}
+        {{ order.status }}
+
+        <ul>
+            {% for item in order['items'] %}
+                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            {%endfor%}
+        </ul>
+
+        <hr>
+    {% endfor %}
+
+    <br><br>
+
+    <h3>Istoric comenzi:</h3>
+
+    {% for order in my_orders_inactive %}
+
+        {{ order.status }}
+
+        <ul>
+            {% for item in order['items'] %}
+                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            {%endfor%}
+        </ul>
+        <hr>
+    {% endfor %}
+</div>
+
+</div>
+
+{% endblock %}

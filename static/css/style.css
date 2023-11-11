@@ -373,6 +373,11 @@ input[type=text] {
   cursor:pointer;
 }
 
+#danger{
+  background-color: rgb(235, 142, 142); 
+  color: red
+}
+
 /* popup page stuff */
 .modal{
   position: fixed;
