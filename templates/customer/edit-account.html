@@ -1,7 +1,7 @@
 {% extends 'customer/base.html' %}
 
 {% block head %}
-<title>My account</title>
+<title>Edit account</title>
 {% endblock %}
 
 {% block body %}
@@ -16,14 +16,8 @@
         Adresă de livrare: <input type="text" name="address" value="{{ user_data.address }}">
         <input type="submit" class="submit" value="Salvează modificările">
     </form>
-    <form action="/delete-account" method="POST" autocomplete="off">
-        <input type="submit" class="submit" value="Șterge contul" style="background-color: #8b0000; color:white">
-    </form>
 </div>
-
 <form action="/delete-account" method="POST" autocomplete="off">
-    <input type="submit" class="submit" value="Șterge contul" id="danger">
+    <input type="submit" class="submit" id = "danger" value="Șterge contul" style="margin-left: 5%;">
 </form>
-
-
 {% endblock %}

@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
+<div class="label"><div class="text-wrapper">Comenzi</div></div>
 
+        <div class="items" style = "margin-left: 5%;">
         {% for order_id, order_data in shop_orders.items() %}
             <br>
             Id comandă: {{order_id}}<br>
@@ -35,37 +37,26 @@
                 <form action="/orders" method="post">
                     <input type="hidden" name="form_type" value="complete_order">
                     <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit">Comanda este gata</button><br>
-                    <button disabled>Comanda ajunge imediat</button><br>
-                    <button disabled>Comanda a fost livrată</button>
+                    <button type="submit" class="submit-order">Comanda este gata</button><br>
                 </form>
-                {%endif%}
+                {%endif%}s
                 {% if order_data['status']==1 %}
                 <form action="/orders" method="post">
-                    <button disabled>Comanda este gata</button><br>
                     <input type="hidden" name="form_type" value="order_arriving_soon">
                     <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit">Comanda ajunge imediat</button><br>
-                    <button disabled>Comanda a fost livrată</button>
+                    <button type="submit" class="submit-order">Comanda ajunge imediat</button><br>
                 </form>
                 {%endif%}
                 {% if order_data['status']==2 %}
                 <form action="/orders" method="post">
-                    <button disabled>Comanda este gata</button><br>
-                    <button disabled>Comanda ajunge imediat</button><br>
                     <input type="hidden" name="form_type" value="deliver_order">
                     <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit">Comanda a fost livrată</button>
+                    <button type="submit" class="submit-order">Comanda a fost livrată</button>
                 </form>
                 {% endif %}
-            {% else %}
-                <button disabled>Comanda este gata</button><br>
-                <button disabled>Comanda ajunge imediat</button><br>
-                <button disabled>Comanda a fost livrată</button><br>
             {% endif %}
 
-            <hr style="width:200px">
         {% endfor %}
     </ul>
-
+</div>
 {% endblock %}
