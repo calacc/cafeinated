@@ -13,10 +13,12 @@
     <a href="/my-orders"><button>Comenzile mele</button></a>
 </div>
 <div style="padding:20px">
-    {% if cart %}
+    {% if items_clean %}
+    {% for shop, shop_items in items_clean.items()%}
+        <h2>{{shop}}</h2>
         <ul>
-            {% for item in cart %}
-                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}
+            {% for item in shop_items %}
+                <li>{{ item.name }} - ${{ item.price }}
                     <form action="{{ url_for('remove_from_cart', index=loop.index0) }}" method="POST">
                         <input type="hidden" name="form_type" value="remove_item_from_cart">
                         <button type="submit">&times;</button>
@@ -24,6 +26,7 @@
                 </li>
             {% endfor %}
         </ul>
+        {%endfor%}
         <form action="/place-order" method="POST">
             <input type="hidden" name="form_type" value="place_order">
             <button type="submit">Trimite comanda!</button>

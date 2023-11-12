@@ -374,7 +374,6 @@ input[type=text] {
 }
 
 #danger{
-  background-color: rgb(235, 142, 142); 
   color: red
 }
 
@@ -479,7 +478,7 @@ input[type=text] {
 }
 
 .close-button{
-  position: absolute;
+  position: relative;
   bottom: 0;
   cursor: pointer;
   background-color:transparent;

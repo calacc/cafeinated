@@ -40,7 +40,7 @@
                                             ★ New ★&nbsp;
                                             {%endif%}
                                         </div>
-                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name.ljust(50, '.')  }}${{ menu_item.price }}</div>
                                         <div>
                                         <form action="/add-to-cart" method="POST">
                                             <input type="hidden" name="item_name" value="{{ menu_item.name }}">
@@ -63,7 +63,7 @@
                                             ★ New ★&nbsp;&nbsp;
                                             {%endif%}
                                             </div>
-                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name.ljust(50, '.')  }}${{ menu_item.price }}</div>
                                         <div>
                                         <form action="/add-to-cart" method="POST">
                                             <input type="hidden" name="item_name" value="{{ menu_item.name }}">
