@@ -6,30 +6,35 @@
 
 {% block body %}
 
-<div style="display: flex; flex-direction: row;">
+<div class="label"><div class="text-wrapper">Coșul Meu</div></div>
+<div style="display: flex; flex-direction: column;">
 
-<div style="padding:20px">
-    <a href="/shopping-cart"><button>Coșul meu de cumpărături</button><br></a>
-    <a href="/my-orders"><button>Comenzile mele</button></a>
+<div style="display: flex; flex-direction: row; margin-left:5%;margin-top:2%">
+    <a href="/shopping-cart"><button class="buttons-cart" style="margin-left: 5%;">Coșul meu de cumpărături</button><br></a>
+    <a href="/my-orders"><button class="buttons-cart" style="margin-left: 5%;">Comenzile mele</button></a>
 </div>
-<div style="padding:20px">
-    {% if cart %}
+<div style="padding:20px; margin-left:5%">
+    {% if items_clean %}
+    {% for shop, shop_items in items_clean.items()%}
         <ul>
-            {% for item in cart %}
-                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}
+            <span class = "title-cart" style="margin-left: 0px;">Cafenea: {{shop}}</span>
+            {% for item in shop_items %}
+                <li style = "list-style-type: none;display:flex;align-items: row;"> 
+                    <span class = "items">{{ item.name }} - ${{ item.price }}</span>
                     <form action="{{ url_for('remove_from_cart', index=loop.index0) }}" method="POST">
                         <input type="hidden" name="form_type" value="remove_item_from_cart">
-                        <button type="submit">&times;</button>
+                        <button type="submit" class="delete-item">&times;</button>
                     </form>
                 </li>
             {% endfor %}
         </ul>
+        {% endfor %}
         <form action="/place-order" method="POST">
             <input type="hidden" name="form_type" value="place_order">
-            <button type="submit">Trimite comanda!</button>
+            <button type="submit" class="submit-order">Trimite comanda!</button>
         </form>
     {% else %}
-        <p>Coșul tău de cumpărături este gol!</p>
+        <p style="margin-left: 0;" class = "title-status">Coșul tău de cumpărături este gol!</p>
     {% endif %}
 </div>
 

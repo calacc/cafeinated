@@ -156,7 +156,13 @@ def remove_from_cart(index):
 def shopping_cart():
     cart = session.get('cart', [])
     print(f"Cart items: {cart}")
-    return render_template('customer/shopping-cart.html', cart=cart)
+    items_clean={}
+    for item in cart:
+        if item['shop'] not in items_clean:
+            items_clean[item['shop']]=[]
+        items_clean[item['shop']].append(item)
+    print(items_clean)
+    return render_template('customer/shopping-cart.html', items_clean=items_clean)
 
 @app.route('/place-order', methods=['POST'])
 def place_order():
