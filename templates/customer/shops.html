@@ -61,11 +61,11 @@
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
                                     <li style="display:flex; flex-direction: row;">
-                                        <div>
+                                        <div style="font-size:18px;">
                                             {% if menu_item.date_added==todays_date %}
-                                            ★ New ★&nbsp;&nbsp;
+                                            ★ New ★&nbsp;
                                             {%endif%}
-                                            </div>
+                                        </div>
                                         <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
                                         <div>
                                         <form action="/add-to-cart" method="POST">

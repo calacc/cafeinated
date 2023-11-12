@@ -462,6 +462,7 @@ input[type=text] {
 }
 
 #danger{
+
   background-color: #8b0000; 
   color: white;
 }
@@ -470,6 +471,7 @@ input[type=text] {
 {
   background-color: white;
   color: #8b0000;
+
 }
 
 /* popup page stuff */
@@ -602,7 +604,7 @@ input[type=text] {
 }
 
 .close-button{
-  position: absolute;
+  position: relative;
   bottom: 0;
   cursor: pointer;
   background-color:transparent;

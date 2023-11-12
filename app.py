@@ -498,6 +498,133 @@ def my_shops():
         print(todays_date)
         return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date, generate_map_embed_code=generate_map_embed_code)
 
+@app.route('/edit-menu/<string:shop_id>', methods=['POST', 'GET'])
+def edit_menu_details(shop_id):
+    if request.method == 'POST':
+        name = request.form['shop_name']
+        address = request.form['address']
+        phone_nr = request.form['phonenr']
+        shop_id = request.form['shop_id']
+        user_ref = db.collection(u'Shops').document(shop_id)
+        user_data = user_ref.get().to_dict()
+        menu=user_data.get('menu')
+        updated_shop={
+            'address': address,
+            'name': name, 
+            'owner': session['user'],
+            'phone_nr': phone_nr,
+            'menu': menu
+        }
+        doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
+        doc_ref.update(updated_shop)
+        return redirect(url_for('my_shop_page', shop_id=shop_id))
+    else:
+        shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
+        this_shop = shop_ref.get()
+        print(this_shop)
+        shop_doc = this_shop[0]
+        this_shop_data = shop_doc.to_dict()
+        menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+        this_shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+        shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+        shops={}
+        for shop in shops_stream:
+            shop_data=shop.to_dict()
+            shop_id=shop_data['name'].replace(" ", "")
+            menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+            shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+            shops[shop_id]=shop_data
+        print(this_shop_data)
+        return render_template('shop-owner/edit-menu-items.html', shops=shops, 
+                               this_shop_data=this_shop_data, 
+                               generate_map_embed_code=generate_map_embed_code)
+
+
+@app.route('/edit-shop/<string:shop_id>', methods=['POST', 'GET'])
+def edit_shop_details(shop_id):
+    if request.method == 'POST':
+        name = request.form['shop_name']
+        address = request.form['address']
+        phone_nr = request.form['phonenr']
+        shop_id = request.form['shop_id']
+        user_ref = db.collection(u'Shops').document(shop_id)
+        user_data = user_ref.get().to_dict()
+        menu=user_data.get('menu')
+        updated_shop={
+            'address': address,
+            'name': name, 
+            'owner': session['user'],
+            'phone_nr': phone_nr,
+            'menu': menu
+        }
+        doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
+        doc_ref.update(updated_shop)
+        return redirect(url_for('my_shop_page', shop_id=shop_id))
+    else:
+        shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
+        this_shop = shop_ref.get()
+        print(this_shop)
+        shop_doc = this_shop[0]
+        this_shop_data = shop_doc.to_dict()
+        menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+        this_shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+        shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+        shops={}
+        for shop in shops_stream:
+            shop_data=shop.to_dict()
+            shop_id=shop_data['name'].replace(" ", "")
+            menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+            shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+            shops[shop_id]=shop_data
+        print(this_shop_data)
+        return render_template('shop-owner/edit-shop-details.html', shops=shops, 
+                               this_shop_data=this_shop_data, 
+                               generate_map_embed_code=generate_map_embed_code)
+
+@app.route('/<string:shop_id>', methods=['POST', 'GET'])
+def my_shop_page(shop_id):
+    if request.method == 'POST':
+        form_type = request.form['form_type']
+        if form_type=='add_menu_item':
+            item_name = request.form['item_name']
+            price = request.form['price']
+            item_type = request.form['item_type']
+            shop_id = request.form['shop_id']
+
+            create_new_menu_item(item_name, price, item_type, shop_id)
+            return redirect(url_for('my_shop_page', shop_id=shop_id))
+        elif form_type=='delete_shop':
+            shop_to_delete = request.form['shop_id']
+            doc_ref = db.collection(u'Shops').document(shop_to_delete)
+            doc_ref.delete()
+            return redirect('/my-shops')
+    else:
+        shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
+        this_shop = shop_ref.get()
+        print(this_shop)
+        shop_doc = this_shop[0]
+        this_shop_data = shop_doc.to_dict()
+        menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+        this_shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+        shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
+        shops={}
+        for shop in shops_stream:
+            shop_data=shop.to_dict()
+            shop_id=shop_data['name'].replace(" ", "")
+            menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+            shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
+
+            shops[shop_id]=shop_data
+        print(this_shop_data)
+        return render_template('shop-owner/myshop-page.html', shops=shops, 
+                               this_shop_data=this_shop_data, 
+                               generate_map_embed_code=generate_map_embed_code)
+
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
     shops_stream = db.collection("Shops").stream()
