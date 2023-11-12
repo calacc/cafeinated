@@ -6,24 +6,62 @@
 
 {% block body %}
 
-        {% for order in active_orders %}
+        {% for order_id, order_data in shop_orders.items() %}
             <br>
-            Id:{{order['order_id']}}<br>
-            {% set address = get_user_address(order['user_id']) %}
-            Adresă de livrare: {{address}}<br>
-            Cine o comandat: {{order['user_id']}}
-            {% for item in order['items'] %}
-                <li>{{ item['shop'] }}: {{ item['name'] }} - ${{ item['price'] }}</li>
-            {% endfor %}
+            Id comandă: {{order_id}}<br>
 
-            {% if can_complete_order(order) %}
+            {% set address = get_user_address(order_data['user_id']) %}
+            Adresă de livrare: {{address}}<br>
+            
+            {% set phonenr = get_user_phonenr(order_data['user_id']) %}
+            Număr telefon client: {{phonenr}}<br>
+
+            {% set name = get_user_name(order_data['user_id']) %}
+            Nume client: {{name}}
+            <br><br>
+            {% for shop_id, shop_data in order_data['shops'].items() %}
+                Numele magazinului: {{ shop_data['shop_name'] }}<br>
+                Adresa magazinului: {{ shop_data['address'] }}<br><br>
+                <ul type="none">
+                {% for item in shop_data['items'] %}
+                    <li>{{ item['name'] }} - ${{ item['price'] }}</li>
+                {% endfor %}
+                </ul>
+                <br>
+            {%endfor%}
+
+            {% if can_complete_order(order_data) %}
+                {% if order_data['status']==0 %}
                 <form action="/orders" method="post">
                     <input type="hidden" name="form_type" value="complete_order">
-                    <input type="hidden" name="order_id" value="{{ order.order_id }}">
-                    <button type="submit">Complete Order</button>
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit">Comanda este gata</button><br>
+                    <button disabled>Comanda ajunge imediat</button><br>
+                    <button disabled>Comanda a fost livrată</button>
                 </form>
+                {%endif%}
+                {% if order_data['status']==1 %}
+                <form action="/orders" method="post">
+                    <button disabled>Comanda este gata</button><br>
+                    <input type="hidden" name="form_type" value="order_arriving_soon">
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit">Comanda ajunge imediat</button><br>
+                    <button disabled>Comanda a fost livrată</button>
+                </form>
+                {%endif%}
+                {% if order_data['status']==2 %}
+                <form action="/orders" method="post">
+                    <button disabled>Comanda este gata</button><br>
+                    <button disabled>Comanda ajunge imediat</button><br>
+                    <input type="hidden" name="form_type" value="deliver_order">
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit">Comanda a fost livrată</button>
+                </form>
+                {% endif %}
             {% else %}
-                <button disabled id="danger">Complete Order</button>
+                <button disabled>Comanda este gata</button><br>
+                <button disabled>Comanda ajunge imediat</button><br>
+                <button disabled>Comanda a fost livrată</button><br>
             {% endif %}
 
             <hr style="width:200px">
