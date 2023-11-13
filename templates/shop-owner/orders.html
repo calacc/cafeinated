@@ -5,24 +5,22 @@
 {% endblock %}
 
 {% block body %}
-
+<div class="label"><div class="text-wrapper">Comenzi</div></div>
 {% for shop_id, shop_data in shop_orders.items() %}
-    <h2>{{ shop_id }}</h2>
-    <ul>
+    <h1 style = "margin-left: 5%;"color:#260507;>{{ shop_id }}</h1>
+    <ul class="items" style="margin-left: 5%;">
         {% for order_id, shop_order in shop_data.items() %}
             <br>
             {{ order_id}}
             {% for item in shop_order['items'] %}
-                <li>{{ item['name'] }} - ${{ item['price'] }}</li>
+                <li style ="list-style-type: none;">{{ item['name'] }} - ${{ item['price'] }}</li>
             {% endfor %}
 
             <form action="/orders" method="POST">
                 <input type="hidden" name="order_id" value="{{ order_id }}">
                 <input type="hidden" name="shop_id" value="{{ shop_id }}">
-                <button type="submit">Complete order</button>
+                <button type="submit" class="submit-order">Complete order</button>
             </form>
-
-            <hr style="width:200px">
         {% endfor %}
     </ul>
     <br>

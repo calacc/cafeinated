@@ -5,56 +5,50 @@
 {% endblock %}
 
 {% block body %}
+<div class="label"><div class="text-wrapper">Comenzile mele</div></div>
+<div style="display: flex; flex-direction: column;">
 
-<div style="display: flex; flex-direction: row;">
-
-<div style="padding:20px">
-    <a href="/shopping-cart"><button>Coșul meu de cumpărături</button><br></a>
-    <a href="/my-orders"><button>Comenzile mele</button></a>
+<div style="display: flex; flex-direction: row;margin-left:5%;margin-top:2%">
+    <a href="/shopping-cart"><button class="buttons-cart" style="margin-left: 5%; height:50px;">Coșul meu de cumpărături</button><br></a>
+    <a href="/my-orders"><button class="buttons-cart" style="margin-left: 5%;height:50px;">Comenzile mele</button></a>
 </div>
-<div style="padding:20px">
-    
-    
-    <h3>Comenzi active:</h3>
+<div style="padding:20px;margin-left:5%;">
+    <h3 class = "title-cart" style="margin-left: 0px;">Comenzi active:</h3>
     {% for order in my_orders_active %}
         {% if order.status == 0 %}
-        Status: Comanda nu este gata încă
+        <span class = "title-status" style="margin-left: 0px;">Status: Comanda nu este gata încă</span>
         {% elif order.status == 1 %}
-        Status: Comanda este în curs de livrare
+        <span class = "title-status" style="margin-left: 0px;">Status: Comanda este în curs de livrare</span>
         {% elif order.status == 2 %}
-        Status: Comanda ajunge imediat!
-        {% else %}
-        Status: Comanda a fost livrata - nu ar trebui sa vezi asta
+        <span class = "title-status" style="margin-left: 0px;">Status: Comanda ajunge imediat!</span>
         {% endif %}
         <br>
-        Dată: {{ order.date }}
-        <ul>
+        <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
+        <ul style = "list-style-type: none;">
             {% for item in order['items'] %}
-                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
             {%endfor%}
         </ul>
         
         <br>
-        <hr>
+        <hr style = "width:15%;border-top:2px dashed #260507;margin-bottom: 1%;">
     {% endfor %}
 
     <br><br>
 
-    <h3>Istoric comenzi:</h3>
-
+    <h3 class = "title-cart" style="margin-left: 0px;font-size: 30px;margin-top: 0px;">Istoric comenzi:</h3>
     {% for order in my_orders_inactive %}
 
-        Dată: {{ order.date }}
-        <ul>
+    <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
+        <ul style = "list-style-type: none;">
             {% for item in order['items'] %}
-                <li>{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            <li class="items" style = "list-style-type: none;">{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
             {%endfor%}
         </ul>
         <br>
-        <hr>
+        <hr style = "width:15%;border-top:2px dashed #260507;margin-bottom: 1%;">
     {% endfor %}
 </div>
-
 </div>
 
 {% endblock %}

@@ -10,15 +10,10 @@
         Număr de telefon:  <input type="text" name="phonenr" value="{{ user_data.phonenr }}">
         <input type="submit" class="submit" value="Salvează modificările">
     </form>
-    <form action="/delete-account" method="POST" autocomplete="off">
-        <input type="submit" class="submit" value="Șterge contul" style="background-color: #8b0000; color:white">
-    </form>
 </div>
 
 <form action="/delete-account" method="POST" autocomplete="off">
-    <input type="submit" class="submit" value="Șterge contul" id="danger">
+    <input type="submit" class="submit" value="Șterge contul" id="danger" style="margin-left: 5%;">
 </form>
-
-
 
 {% endblock %}

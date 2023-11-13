@@ -282,7 +282,16 @@ body{
   width:150px;
   font-size: 20px;
   color: white;
-  border-radius: 34px;
+  border-radius: 10px;
+  cursor:pointer;
+  border:0;
+}
+
+.edit-account:hover
+{
+  color:#260507;
+  background-color: #e3c57e;
+  border : 0;
 }
 
 .create_account
@@ -336,13 +345,19 @@ a
   font-weight: 800;
 }
 
+.create_account .span:hover
+{
+  color:#583f20;
+  border : 0;
+}
+
 input {
   display:flex;
   margin-top:10px;
   justify-content:flex-start;
   background-color: #d1913c80;
   border-radius: 10px;
-  border-color: black;
+  border:0;
   font-family: "Lexend-Regular", Helvetica;
   font-weight: normal;
   font-size: 20px;
@@ -365,16 +380,98 @@ input[type=text] {
   margin-top:20px;
   font-family: "Lexend-Regular", Helvetica;
   font-weight: 700;
-  height: 50px;
+  width: fit-content + 5px;
   font-size: 20px;
   color: white;
   border-radius: 10px;
-  border-color: black;
+  border:0;
   cursor:pointer;
 }
 
+.submit:hover
+{
+  color:#260507;
+  background-color: #e3c57e;
+  border : 0;
+}
+
+.submit-order
+{
+  display:flex;
+  justify-content:center;
+  background-color: #260507;
+  align-items: center;
+  margin-top:20px;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  width: fit-content;
+  height: 40px;
+  vertical-align: middle;
+  padding: 0 20px;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  border:0;
+  cursor:pointer;
+}
+
+.submit-order:hover
+{
+  color:#260507;
+  background-color: #e3c57e;
+  border : 0;
+}
+
+.buttons-cart
+{
+  display:flex;
+  justify-content:center;
+  background-color: #4b412a;
+  align-items: center;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  width: fit-content;
+  height: fit-content;
+  vertical-align: middle;
+  padding: 0 20px;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  border:0;
+  cursor:pointer;
+}
+
+.delete-item
+{
+  margin-left: 5px;
+  border:0;
+  background-color: transparent;
+  color:#260507;
+  font-size: 20px;
+  font-weight: bold;
+  cursor:pointer;
+}
+
+.buttons-cart:hover
+{
+  color:#260507;
+  background-color: #e3c57e;
+  border : 0;
+}
+
 #danger{
-  color: red
+
+  background-color: #8b0000; 
+  color: white;
+}
+
+#danger:hover
+{
+  background-color: white;
+  color: #8b0000;
+
 }
 
 /* popup page stuff */
@@ -424,6 +521,35 @@ input[type=text] {
   margin-left:30px;
 }
 
+.title-cart
+{
+  display:flex;
+  margin-bottom: 1%;
+  font-size:60px;
+  color:white;
+  margin-left:30px;
+}
+
+.title-status
+{
+  display:flex;
+  margin-bottom: 1%;
+  font-size:30px;
+  color:#260507;
+  margin-left:30px;
+  font-weight: bolder;
+}
+
+.title-data
+{
+  display:flex;
+  margin-bottom: 1%;
+  font-size:20px;
+  color:#260507;
+  margin-left:30px;
+  font-weight: bold;
+}
+
 .coffees
 {
   display:flex;
@@ -436,7 +562,7 @@ input[type=text] {
 
 .items
 {
-  font-size:20px;
+  font-size:24px;
   font-weight: lighter;
   color:white;
 }
