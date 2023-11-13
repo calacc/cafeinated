@@ -50,7 +50,7 @@ def generate_map_embed_code(address):
     coordinates = geocode_address(address)
 
     if coordinates:
-        return f'<iframe width="600" height="450" frameborder="0" style="border:0; border-radius:10px" ' \
+        return f'<iframe width="400px" height="250px" frameborder="0" style="border:0; border-radius:10px; margin-top: calc(100% - 80%);" ' \
             f'src="https://www.google.com/maps/embed/v1/view?key=AIzaSyA4YbofL5tc2as0qsmjv3yDc556NaD3usE&center={coordinates[0]},{coordinates[1]}&zoom=20" allowfullscreen></iframe>'
     else:
         return '<p>Unable to generate map for the provided address.</p>'
