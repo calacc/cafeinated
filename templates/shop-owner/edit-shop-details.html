@@ -15,7 +15,8 @@
         <div style="width:20%;"> <!-- butoane bro-->
             <a href="/my-shops"><button style="height:30px">all shops</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
-            <a href="/{{shop_name}}"><button style="height:30px">{{shop_name}}</button><br></a>
+            {% set good_name = acceptable_shop_name(shop_data['name']) %}
+            <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
 
@@ -37,8 +38,9 @@
         <div style="margin-left:50px">
     
             <h2>Coffee shop editing area</h2>
-            <a href="/{{this_shop_data.name}}"><button>Back to coffee shop page</button></a><br>
-            <a href="/edit-menu/{{this_shop_data.name}}"><button>Edit menu items</button></a>
+            {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <a href="/{{good_name}}"><button>Back to coffee shop page</button></a><br>
+            <a href="/edit-menu/{{good_name}}"><button>Edit menu items</button></a>
                 
         
             </div>                   

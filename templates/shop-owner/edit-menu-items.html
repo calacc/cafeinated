@@ -15,70 +15,66 @@
         <div style="width:20%;"> <!-- butoane bro-->
             <a href="/my-shops"><button style="height:30px">all shops</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
-            <a href="/{{shop_name}}"><button style="height:30px">{{shop_name}}</button><br></a>
+            {% set good_name = acceptable_shop_name(shop_data['name']) %}
+            <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
-
-
+        
+        
         <div style="display:flex">
-        
-        
-        <div>
-            <p class = "menu">Meniu</p>
-            <p class = "coffees">Coffees:</p>
-            <ul class = "items" style="margin-left:50px; list-style: none;">
-        
+            
+            
+            <div>
+                <p class = "menu">Editare meniu</p>
+                {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
+                <input type="hidden" name="form_type" value="update_menu">
+                <input type="hidden" name="shop_id" value="{{ good_name }}">
                 {% for menu_item in this_shop_data.menu %}
-                    {% if menu_item['type']=='coffee' %}
-                    <li style="display:flex; flex-direction: row;">
-                        <div style="font-size:18px;">
-                            {% if menu_item.date_added==todays_date %}
-                            ★ New ★&nbsp;
-                            {%endif%}
-                        </div>
-                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
-                    </li>
-                    {% endif %}
+                    <div style="display:flex;">
+                    <div>Nume produs: <input type="text" name="item_name_{{ loop.index0 }}" 
+                        id="item_name_{{ loop.index0 }}" value="{{menu_item.name}}"></div>
+                    <div>Preț: <input type="text" name="price_{{ loop.index0 }}" 
+                        id="price_{{ loop.index0 }}" value="{{menu_item.price}}"
+                        style="width:100px"></div>
+                    <div>Tip produs: <input type="text" name="item_type_{{ loop.index0 }}" 
+                        id="item_type_{{ loop.index0 }}" value="{{menu_item.type}}"></div>
+                    <br>
+                    <!-- <div>
+                        <form action="/edit-menu/{{good_name}}/delete-item/{{ menu_item.name }}" method="POST">
+                            <button type="submit" name="delete_item" 
+                                value="delete_{{ loop.index0 }}"
+                                style="margin-top:35px">&times;</button>
+                        </form>
+                    </div> -->
+                    </div>
                 {% endfor %}
-            </ul>
-        
-            <p class = "desserts">Desserts:</p>
-            <ul class = "items" style="margin-left:50px; list-style: none;">
-                {% for menu_item in this_shop_data.menu %}
-                    {% if menu_item['type']=='desert' %}
-                    <li style="display:flex; flex-direction: row;">
-                        <div style="font-size:18px;">
-                            {% if menu_item.date_added==todays_date %}
-                            ★ New ★&nbsp;
-                            {%endif%}
-                        </div>
-                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
-                    </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
+                <input type="submit" value="Salvează modificările">
+            </form>
+
         
             
         </div> 
 
         <div style="margin-left:50px">
-        <br><h3>add new menu item</h3><br>
-    
-        <form action="/{{shop_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
-            Item name: <input type="text" name="item_name" id="item_name"><br>
-            Price: <input type="text" name="price" id="price"><br>
-            Item type: <input type="text" name="item_type" id="item_type"><br>
+        <br><h3>Adaugă un produs nou</h3><br>
+        {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+        <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
+            Nume produs: <input type="text" name="item_name" id="item_name"><br>
+            Preț: <input type="text" name="price" id="price"><br>
+            Tip produs: <input type="text" name="item_type" id="item_type"><br>
             <input type="hidden" name="form_type" value="add_menu_item">
             <input type="hidden" name="shop_id" value="{{ this_shop_data.name }}">
-            <input type="submit" value="Add menu item">
+            <input type="submit" value="Adaugă produsul">
         </form>
         </div>
 
         <div style="margin-left:50px">
     
             <h2>Coffee shop editing area</h2>
-            <a href="/{{this_shop_data.name}}"><button>Back to coffee shop page</button></a><br>
-            <a href="/edit-shop/{{this_shop_data.name}}"><button>Edit shop details</button></a>
+            {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <a href="/{{good_name}}"><button>Back to coffee shop page</button></a><br>
+            <a href="/edit-shop/{{good_name}}"><button>Edit shop details</button></a>
                 
         
         </div>                   

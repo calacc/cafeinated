@@ -6,18 +6,20 @@
 
 {% block body %}
 
+
 <div class="content">
-
+    
     <div class="label"><div class="text-wrapper">Cafenele</div></div>
-
+    
     <div style="display: flex; flex-direction: row;padding:20px;">
-
+        
         <div style="width:20%;"> <!-- butoane bro-->
             <a href="/my-shops"><button style="height:30px">all shops</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
-            <a href="/{{shop_name}}"><button style="height:30px">{{shop_name}}</button><br></a>
+            {% set good_name = acceptable_shop_name(shop_data['name']) %}
+            <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
-        </div> 
+        </div>  
 
 
     <div style="display:flex">
@@ -69,24 +71,13 @@
     </ul>
 
     </div> 
-    <div style="margin-left:50px">
-    <br><h3>add new menu item</h3><br>
-
-    <form action="/{{shop_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
-        Item name: <input type="text" name="item_name" id="item_name"><br>
-        Price: <input type="text" name="price" id="price"><br>
-        Item type: <input type="text" name="item_type" id="item_type"><br>
-        <input type="hidden" name="form_type" value="add_menu_item">
-        <input type="hidden" name="shop_id" value="{{ this_shop_data.name }}">
-        <input type="submit" value="Add menu item">
-    </form>
-    </div>
 
     <div style="margin-left:50px">
 
     <h2>Coffee shop editing area</h2>
-    <a href="/edit-shop/{{this_shop_data.name}}"><button>Edit shop details</button></a><br>
-    <a href="/edit-menu/{{this_shop_data.name}}"><button>Edit menu items</button></a>
+    {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+    <a href="/edit-shop/{{good_name}}"><button>Edit shop details</button></a><br>
+    <a href="/edit-menu/{{good_name}}"><button>Edit menu items</button></a>
 
 
     </div>                 
