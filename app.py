@@ -507,19 +507,25 @@ def my_shops():
 def delete_item(shop_id,item_name_to_delete):
     # Check if the delete button was clicked
     if request.method=='POST':
-        print("\n\nALOOO\n\n")
+        id_copy=shop_id
+        id_copy=id_copy.replace("_", " ")
+        user_ref = db.collection(u'Shops').document(id_copy)
+        user_data = user_ref.get().to_dict()
+        menu_ref = user_ref.collection('menu')
+        menu = {doc.id: doc.to_dict() for doc in menu_ref.stream()}
 
-        if 'delete_item' in request.form:
-            id_copy = shop_id
+        count = 0
+        for item_id, menu_item in menu.items():
+            if f'delete_{count}' in request.form:
+                print('\n\nintra aici\n\n')
+                db.collection(u'Shops').document(id_copy).collection('menu')
+                menu_ref = db.collection('Shops').document(id_copy).collection('menu')
+                query = menu_ref.where('name', '==', item_name_to_delete)
+                docs = query.get()
 
-            # Query to find the document with the specified name
-            menu_ref = db.collection('Shops').document(id_copy).collection('menu')
-            query = menu_ref.where('name', '==', item_name_to_delete)
-            docs = query.get()
-
-            # Delete the document(s) that match the query
-            for doc in docs:
-                doc.reference.delete()
+                for doc in docs:
+                    doc.reference.delete()
+            count=count+1
 
         # Redirect back to the items page or wherever you want to go after deletion
         return redirect(url_for('edit_menu_details', shop_id=shop_id))
