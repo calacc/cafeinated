@@ -24,15 +24,20 @@
     <div style="display:flex">
         
         
-        <div>
-            <form action="/edit-shop/{{this_shop_data.name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
+        <div>{% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <form action="/edit-shop/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
                 Numele cafenelei: <input type="text" name="shop_name" id="shop_name" value="{{this_shop_data.name}}"><br>
                 Adresă: <input type="text" name="address" id="address" value="{{this_shop_data.address}}"><br>
                 Număr de telefon: <input type="text" name="phonenr" id="phonenr" value="{{this_shop_data.phone_nr}}"><br>
                 <input type="hidden" name="shop_id" value="{{ this_shop_data.name }}">
+                <input type="hidden" name="form_type" value="update_shop_details">
                 <input type="submit" value="Salvează modificările">
             </form>
-            
+            <br>{% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <form action="/delete-shop/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
+                <input type="hidden" name="form_type" value="delete_shop">
+                <input type="submit" value="Delete shop" id="danger">
+            </form>
         </div> 
         
         <div style="margin-left:50px">

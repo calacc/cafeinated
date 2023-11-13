@@ -11,6 +11,7 @@ from firebase_admin import firestore
 from geopy.geocoders import Nominatim
 from collections import defaultdict
 from itertools import chain
+from firebase_admin import auth
 
 app = Flask(__name__)
 
@@ -127,9 +128,15 @@ def delete_account():
         if request.method=='POST':
             user_to_delete=session['user']
             session.pop('cart', None)
-            session.pop('user')
+
             doc_ref = db.collection(u'Users').document(user_to_delete)
             doc_ref.delete()
+            
+            mail=session['user']
+            passwd=session['pass']
+            user=auth.sign_in_with_email_and_password(mail, passwd)
+            auth.delete_account(user.uid)
+            session.pop('user')
     return redirect('/')
 
 @app.route('/add-to-cart', methods=['POST'])
@@ -372,6 +379,7 @@ def create_customer_account():
             create_new_user(address, email, name, phonenr, 'customer')
 
             session['user']=email
+            session['pass']=password
             return redirect('/')
         except:
             return 'failed to create customer account'
@@ -408,6 +416,7 @@ def login():
         try:
             user=auth.sign_in_with_email_and_password(email, password)
             session['user']=email
+            session['pass']=password
             return redirect('/')
         except:
             return 'failed to log in'
@@ -543,7 +552,7 @@ def edit_menu_details(shop_id):
             create_new_menu_item(item_name, price, item_type, shop_id)
             return redirect(url_for('edit_menu_details', shop_id=shop_id))
         elif form_type=='update_menu':
-            id_copy=shop_id
+            id_copy=shop_id.replace("_", " ")
             user_ref = db.collection(u'Shops').document(id_copy)
             user_data = user_ref.get().to_dict()
             menu_ref = user_ref.collection('menu')
@@ -579,7 +588,6 @@ def edit_menu_details(shop_id):
 
                 count += 1
 
-
             return redirect(url_for('my_shop_page', shop_id=shop_id))
     else:
         shop_id=shop_id.replace("_", " ")
@@ -606,26 +614,39 @@ def edit_menu_details(shop_id):
                                generate_map_embed_code=generate_map_embed_code,
                                acceptable_shop_name=acceptable_shop_name)
 
+@app.route('/delete-shop/<string:shop_id>', methods=['POST'])
+def delete_shop(shop_id):
+    if request.method == 'POST':
+        copy_id=shop_id.replace("_", "")
+        doc_ref = db.collection(u'Shops').document(copy_id)
+        doc_ref.delete()
+        return redirect('/my-shops')
+
 @app.route('/edit-shop/<string:shop_id>', methods=['POST', 'GET'])
 def edit_shop_details(shop_id):
     if request.method == 'POST':
-        name = request.form['shop_name']
-        address = request.form['address']
-        phone_nr = request.form['phonenr']
-        shop_id = request.form['shop_id']
-        user_ref = db.collection(u'Shops').document(shop_id)
-        user_data = user_ref.get().to_dict()
-        menu=user_data.get('menu')
-        updated_shop={
-            'address': address,
-            'name': name, 
-            'owner': session['user'],
-            'phone_nr': phone_nr,
-            'menu': menu
-        }
-        doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
-        doc_ref.update(updated_shop)
-        return redirect(url_for('my_shop_page', shop_id=shop_id))
+        intact=shop_id
+        copy_id=shop_id
+        copy_id=copy_id.replace("_", "")
+        form_type=request.form['form_type']
+        if form_type=='update_shop_details':
+            name = request.form['shop_name']
+            address = request.form['address']
+            phone_nr = request.form['phonenr']
+            shop_id = request.form['shop_id'].replace(" ", "")
+            user_ref = db.collection(u'Shops').document(copy_id)
+            user_data = user_ref.get().to_dict()
+            menu=user_data.get('menu')
+            updated_shop={
+                'address': address,
+                'name': name, 
+                'owner': session['user'],
+                'phone_nr': phone_nr,
+                'menu': menu
+            }
+            doc_ref=db.collection(u'Shops').document(copy_id)
+            doc_ref.update(updated_shop)
+            return redirect(url_for('my_shop_page', shop_id=intact))
     else:
         shop_id=shop_id.replace("_", " ")
         shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
