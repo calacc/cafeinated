@@ -507,8 +507,8 @@ def my_shops():
 def delete_item(shop_id,item_name_to_delete):
     # Check if the delete button was clicked
     if request.method=='POST':
-        print("\n\ndeci buna siua\n\n")
         id_copy=shop_id
+        id_copy=id_copy.replace("_", " ")
         user_ref = db.collection(u'Shops').document(id_copy)
         user_data = user_ref.get().to_dict()
         menu_ref = user_ref.collection('menu')
