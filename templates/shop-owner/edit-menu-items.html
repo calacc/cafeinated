@@ -1,32 +1,24 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Coffee shops</title>
+<title>Cafenele</title>
 {% endblock %}
 
 {% block body %}
+<div class="label"><div class="text-wrapper">{{this_shop_data['name']}}</div></div>
+<div class="content-menu-items">
+    <div style="display: flex; flex-direction: row;padding:30px;">
 
-<div class="content">
-
-    <div class="label"><div class="text-wrapper">{{this_shop_data['name']}}</div></div>
-
-    <div style="display: flex; flex-direction: row;padding:20px;">
-
-        <div style="width:20%;"> <!-- butoane bro-->
-            <a href="/my-shops"><button style="height:30px">all shops</button><br></a>
+        <div style="width:20%;margin-right: 50px;"> <!-- butoane bro-->
+            <a href="/my-shops"><button style="height:30px" class="shops-button">All shops</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
             {% set good_name = acceptable_shop_name(shop_data['name']) %}
-            <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
+            <a href="/{{good_name}}"><button style="height:30px" class="shops-button">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
         
-        
-        
         <div style="display:flex">
-            
-            
-            <div>
-                <p class = "menu">Editare meniu</p>
+            <div class="items-table">
                 {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
             <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
                 <input type="hidden" name="form_type" value="update_menu">
@@ -50,20 +42,20 @@
                     </div> -->
                     </div>
                 {% endfor %}
-                <input type="submit" value="Salvează modificările">
+                <input type="submit" class="submit-order" value="Salvează modificările">
             </form>
 
         
-            
+     
         </div> 
         <div style="margin-top:40px">
             
                 {% for menu_item in this_shop_data.menu %}
                 <div style="display:flex;">
-                    <div style="margin-top:20px">
+                    <div>
                         <form action="/edit-menu/{{good_name}}/delete-item/{{ menu_item.name }}" method="POST">
                             <input type="hidden" name="form_type" value="delete_{{loop.index0}}">  
-                            <button type="submit" name="delete_{{loop.index0}}" 
+                            <button type="submit" class="delete-item" name="delete_{{loop.index0}}" 
                                 value="delete_{{ loop.index0 }}"
                                 style="margin-top:35px">&times;</button>
                         </form>
@@ -71,9 +63,9 @@
                     </div>
                 {% endfor %}
         </div>
-
-        <div style="margin-left:50px">
-        <br><h3>Adaugă un produs nou</h3><br>
+        </div>
+        <div style="margin-left:50px;display:flex;">
+        <h3>Adaugă un produs nou</h3>
         {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
         <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
             Nume produs: <input type="text" name="item_name" id="item_name"><br>
@@ -81,16 +73,16 @@
             Tip produs: <input type="text" name="item_type" id="item_type"><br>
             <input type="hidden" name="form_type" value="add_menu_item">
             <input type="hidden" name="shop_id" value="{{ this_shop_data.name }}">
-            <input type="submit" value="Adaugă produsul">
+            <input type="submit" class="submit-order" value="Adaugă produsul">
         </form>
         </div>
-
+    </div> 
         <div style="margin-left:50px">
     
             <h2>Coffee shop editing area</h2>
             {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
-            <a href="/{{good_name}}"><button>Back to coffee shop page</button></a><br>
-            <a href="/edit-shop/{{good_name}}"><button>Edit shop details</button></a>
+            <a href="/{{good_name}}"><button class="submit-order">Back to coffee shop page</button></a><br>
+            <a href="/edit-shop/{{good_name}}"><button class="submit-order">Edit shop details</button></a>
                 
         
         </div>                   

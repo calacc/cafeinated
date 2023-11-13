@@ -1,7 +1,7 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Coffee shops</title>
+<title>Cafenele</title>
 {% endblock %}
 
 {% block body %}
@@ -46,7 +46,7 @@
                     ★ New ★&nbsp;
                     {%endif%}
                 </div>
-                <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                <div>{{ menu_item.name }} ......................{{ menu_item.price }} RON</div>
             </li>
             {% endif %}
         {% endfor %}
@@ -62,7 +62,7 @@
                     ★ New ★&nbsp;
                     {%endif%}
                 </div>
-                <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                <div>{{ menu_item.name }} ......................{{ menu_item.price }} RON</div>
             </li>
             {% endif %}
         {% endfor %}

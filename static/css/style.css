@@ -139,6 +139,15 @@ body{
   font-size: 15px;
 }
 
+.content-menu-items
+{
+  display: column;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /*Main page*/
 .box {
   display: flex;
@@ -524,6 +533,13 @@ input[type=text] {
   height: 80%;
   width: 80%;
   overflow: auto;
+}
+
+.items-table
+{
+  display: flex;
+  color:#220708;
+  font-family: "Lexend Zetta-Black", Helvetica;
 }
 
 .details
