@@ -148,9 +148,17 @@ def add_to_cart():
 
     return redirect('/coffeeshops')  
 
-@app.route('/remove_from_cart/<int:index>', methods=['POST'])
-def remove_from_cart(index):
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    name_del=request.form['name']
+    shop_del=request.form['shop']
     cart_copy = session['cart'].copy()
+    count=0
+    index=0
+    for item in cart_copy:
+        if item['name']==name_del and item['shop']==shop_del:
+            index=count
+        count=count+1
     removed_item = cart_copy.pop(index)
     session['cart'] = cart_copy
     return redirect('/shopping-cart')
