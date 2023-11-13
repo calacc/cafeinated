@@ -105,6 +105,9 @@ def create_new_shop(name, address, phone_nr, owner):
     doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
     doc_ref.set(new_shop)
 
+def acceptable_shop_name(name):
+    return name.replace(" ", "_")
+
 def create_new_menu_item(item_name, price, item_type, shop_id):
     current_date = datetime.date.today()
     date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
@@ -496,29 +499,84 @@ def my_shops():
         date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
         todays_date = ' '.join(date_list)
         print(todays_date)
-        return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date, generate_map_embed_code=generate_map_embed_code)
+        return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date,
+                                generate_map_embed_code=generate_map_embed_code,
+                                acceptable_shop_name=acceptable_shop_name)
+
+@app.route('/edit-menu/<string:shop_id>/delete-item/<string:item_name_to_delete>', methods=['POST'])
+def delete_item(shop_id,item_name_to_delete):
+    # Check if the delete button was clicked
+    if request.method=='POST':
+        print("\n\nALOOO\n\n")
+
+        if 'delete_item' in request.form:
+            id_copy = shop_id
+
+            # Query to find the document with the specified name
+            menu_ref = db.collection('Shops').document(id_copy).collection('menu')
+            query = menu_ref.where('name', '==', item_name_to_delete)
+            docs = query.get()
+
+            # Delete the document(s) that match the query
+            for doc in docs:
+                doc.reference.delete()
+
+        # Redirect back to the items page or wherever you want to go after deletion
+        return redirect(url_for('edit_menu_details', shop_id=shop_id))
 
 @app.route('/edit-menu/<string:shop_id>', methods=['POST', 'GET'])
 def edit_menu_details(shop_id):
     if request.method == 'POST':
-        name = request.form['shop_name']
-        address = request.form['address']
-        phone_nr = request.form['phonenr']
-        shop_id = request.form['shop_id']
-        user_ref = db.collection(u'Shops').document(shop_id)
-        user_data = user_ref.get().to_dict()
-        menu=user_data.get('menu')
-        updated_shop={
-            'address': address,
-            'name': name, 
-            'owner': session['user'],
-            'phone_nr': phone_nr,
-            'menu': menu
-        }
-        doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
-        doc_ref.update(updated_shop)
-        return redirect(url_for('my_shop_page', shop_id=shop_id))
+        form_type=request.form['form_type']
+        if form_type=='add_menu_item':
+            item_name = request.form['item_name']
+            price = request.form['price']
+            item_type = request.form['item_type']
+            shop_id = request.form['shop_id']
+
+            create_new_menu_item(item_name, price, item_type, shop_id)
+            return redirect(url_for('edit_menu_details', shop_id=shop_id))
+        elif form_type=='update_menu':
+            id_copy=shop_id
+            user_ref = db.collection(u'Shops').document(id_copy)
+            user_data = user_ref.get().to_dict()
+            menu_ref = user_ref.collection('menu')
+            menu = {doc.id: doc.to_dict() for doc in menu_ref.stream()}
+
+            count = 0
+            for item_id, menu_item in menu.items():
+                name = request.form.get(f'item_name_{count}')
+                price = request.form.get(f'price_{count}')
+                item_type = request.form.get(f'item_type_{count}')
+                date_added = menu_item.get('date_added', '')  # Ensure date_added is retrieved properly
+                print(f'delete_{count}' in request.form)
+                print(request.form)
+
+                if name is None:
+                    name = menu_item.get('name', '')
+                if price is None:
+                    price = menu_item.get('price', '')
+                if item_type is None:
+                    item_type = menu_item.get('type', '')
+
+                updated_item = {
+                    'name': name,
+                    'price': price,
+                    'type': item_type,
+                    'date_added': date_added
+                }
+
+                shop_ref = db.collection(u'Shops').document(id_copy)
+                doc_ref = shop_ref.collection('menu').document(item_id)
+                doc_ref.set(updated_item, merge=True)
+                print(f'Document After Update ({item_id}): {doc_ref.get().to_dict()}\n')
+
+                count += 1
+
+
+            return redirect(url_for('my_shop_page', shop_id=shop_id))
     else:
+        shop_id=shop_id.replace("_", " ")
         shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
         this_shop = shop_ref.get()
         print(this_shop)
@@ -539,8 +597,8 @@ def edit_menu_details(shop_id):
         print(this_shop_data)
         return render_template('shop-owner/edit-menu-items.html', shops=shops, 
                                this_shop_data=this_shop_data, 
-                               generate_map_embed_code=generate_map_embed_code)
-
+                               generate_map_embed_code=generate_map_embed_code,
+                               acceptable_shop_name=acceptable_shop_name)
 
 @app.route('/edit-shop/<string:shop_id>', methods=['POST', 'GET'])
 def edit_shop_details(shop_id):
@@ -563,6 +621,7 @@ def edit_shop_details(shop_id):
         doc_ref.update(updated_shop)
         return redirect(url_for('my_shop_page', shop_id=shop_id))
     else:
+        shop_id=shop_id.replace("_", " ")
         shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
         this_shop = shop_ref.get()
         print(this_shop)
@@ -583,7 +642,8 @@ def edit_shop_details(shop_id):
         print(this_shop_data)
         return render_template('shop-owner/edit-shop-details.html', shops=shops, 
                                this_shop_data=this_shop_data, 
-                               generate_map_embed_code=generate_map_embed_code)
+                               generate_map_embed_code=generate_map_embed_code,
+                               acceptable_shop_name=acceptable_shop_name)
 
 @app.route('/<string:shop_id>', methods=['POST', 'GET'])
 def my_shop_page(shop_id):
@@ -603,6 +663,7 @@ def my_shop_page(shop_id):
             doc_ref.delete()
             return redirect('/my-shops')
     else:
+        shop_id=shop_id.replace("_", " ")
         shop_ref = db.collection('Shops').where('name', '==', shop_id).limit(1)
         this_shop = shop_ref.get()
         print(this_shop)
@@ -623,7 +684,8 @@ def my_shop_page(shop_id):
         print(this_shop_data)
         return render_template('shop-owner/myshop-page.html', shops=shops, 
                                this_shop_data=this_shop_data, 
-                               generate_map_embed_code=generate_map_embed_code)
+                               generate_map_embed_code=generate_map_embed_code,
+                               acceptable_shop_name=acceptable_shop_name)
 
 @app.route('/coffeeshops', methods=['POST', 'GET'])
 def index():
