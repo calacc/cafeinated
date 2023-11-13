@@ -8,7 +8,7 @@
 
 <div class="content">
 
-    <div class="label"><div class="text-wrapper">Cafenele</div></div>
+    <div class="label"><div class="text-wrapper">{{this_shop_data['name']}}</div></div>
 
     <div style="display: flex; flex-direction: row;padding:20px;">
 
@@ -19,6 +19,7 @@
             <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
+        
         
         
         <div style="display:flex">
@@ -55,6 +56,21 @@
         
             
         </div> 
+        <div style="margin-top:40px">
+            
+                {% for menu_item in this_shop_data.menu %}
+                <div style="display:flex;">
+                    <div style="margin-top:20px">
+                        <form action="/edit-menu/{{good_name}}/delete-item/{{ menu_item.name }}" method="POST">
+                            <input type="hidden" name="form_type" value="delete_{{loop.index0}}">  
+                            <button type="submit" name="delete_{{loop.index0}}" 
+                                value="delete_{{ loop.index0 }}"
+                                style="margin-top:35px">&times;</button>
+                        </form>
+                    </div>
+                    </div>
+                {% endfor %}
+        </div>
 
         <div style="margin-left:50px">
         <br><h3>Adaugă un produs nou</h3><br>
