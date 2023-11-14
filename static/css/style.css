@@ -16,6 +16,17 @@ body{
 	height: 100%;
 }
 
+#about_us{
+  position:absolute;
+  bottom:0;
+  justify-content: center;
+  width:100%;
+  font-size:18px;
+	font-family: "Lexend-Medium", Helvetica;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
 /*Navigation Bar*/
 .nav{
   display:flex;

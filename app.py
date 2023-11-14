@@ -487,6 +487,14 @@ def my_account():
     elif user_type=='shop-owner':
         return render_template('shop-owner/my-account.html', user_data=user_data)
 
+@app.route('/delete/<string:shop_id>', methods=['POST'])
+def delete_shop(shop_id):
+    if request.method == 'POST':
+        shop_id=shop_id.replace("_", "")
+        doc_ref = db.collection(u'Shops').document(shop_id)
+        doc_ref.delete()
+        return redirect('/my-shops')
+
 @app.route('/my-shops', methods=['POST', 'GET'])
 def my_shops():
     if request.method == 'POST':
@@ -567,12 +575,11 @@ def edit_menu_details(shop_id):
             item_name = request.form['item_name']
             price = request.form['price']
             item_type = request.form['item_type']
-            shop_id = request.form['shop_id']
 
-            create_new_menu_item(item_name, price, item_type, shop_id)
+            create_new_menu_item(item_name, price, item_type, shop_id.replace("_",""))
             return redirect(url_for('edit_menu_details', shop_id=shop_id))
         elif form_type=='update_menu':
-            id_copy=shop_id
+            id_copy=shop_id.replace("_", "")
             user_ref = db.collection(u'Shops').document(id_copy)
             user_data = user_ref.get().to_dict()
             menu_ref = user_ref.collection('menu')
@@ -617,7 +624,7 @@ def edit_menu_details(shop_id):
         print(this_shop)
         shop_doc = this_shop[0]
         this_shop_data = shop_doc.to_dict()
-        menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
+        menu_items = db.collection("Shops").document(shop_id.replace(" ","")).collection("menu").stream()
         this_shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
 
         shops_stream = db.collection("Shops").where("owner", "==", session['user']).stream()
@@ -638,11 +645,12 @@ def edit_menu_details(shop_id):
 @app.route('/edit-shop/<string:shop_id>', methods=['POST', 'GET'])
 def edit_shop_details(shop_id):
     if request.method == 'POST':
+        copy_id=shop_id.replace("_", "")
         name = request.form['shop_name']
         address = request.form['address']
         phone_nr = request.form['phonenr']
         shop_id = request.form['shop_id']
-        user_ref = db.collection(u'Shops').document(shop_id)
+        user_ref = db.collection(u'Shops').document(copy_id)
         user_data = user_ref.get().to_dict()
         menu=user_data.get('menu')
         updated_shop={

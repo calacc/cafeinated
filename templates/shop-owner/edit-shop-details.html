@@ -24,8 +24,8 @@
     <div style="display:flex">
         
         
-        <div>
-            <form action="/edit-shop/{{this_shop_data.name}}" method="POST" style="font-weight: 700; font-size: 15px;
+        <div>{% set good_name = acceptable_shop_name(this_shop_data['name']) %}
+            <form action="/edit-shop/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px;
             font-family: Lexend Zetta-Black, Helvetica; color:#260507;">
                 Numele cafenelei: <input type="text" name="shop_name" id="shop_name" value="{{this_shop_data.name}}"><br>
                 Adresă: <input type="text" name="address" id="address" value="{{this_shop_data.address}}"><br>
@@ -42,6 +42,11 @@
             <div class = "edit-form">
                 {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
                 <a href="/edit-menu/{{good_name}}"><button class = "submit-order">Editează meniul</button></a>
+                <form action="/delete/{{good_name}}" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="submit-order" id="danger">Șterge cafeneaua</button>
+                </form>
+                <!-- <a href="/delete/{{good_name}}"><button class = "submit-order" id = "danger">Șterge cafeneaua</button></a> -->
             </div>
         
             </div>                   
