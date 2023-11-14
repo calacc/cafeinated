@@ -392,7 +392,7 @@ def create_customer_account():
             user=auth.sign_in_with_email_and_password(email, password)
             
             create_new_user(address, email, name, phonenr, 'customer')
-
+            session['admin']=False
             session['user']=email
             return redirect('/')
         except:
@@ -413,7 +413,7 @@ def create_shop_owner_account():
             user=auth.sign_in_with_email_and_password(email, password)
             
             create_new_user('', email, name, phonenr, 'shop-owner')
-
+            session['admin']=False
             session['user']=email
             return redirect('/')
         except:
@@ -431,6 +431,7 @@ def login():
             user=auth.sign_in_with_email_and_password(email, password)
             session['user']=email
             session['pass']=password
+            session['admin']=False
             if email=='admin@cafeinated.com':
                 session['admin']=True
             else: 
@@ -545,7 +546,7 @@ def delete_item(shop_id,item_name_to_delete):
     # Check if the delete button was clicked
     if request.method=='POST':
         id_copy=shop_id
-        id_copy=id_copy.replace("_", " ")
+        id_copy=id_copy.replace("_", "")
         user_ref = db.collection(u'Shops').document(id_copy)
         user_data = user_ref.get().to_dict()
         menu_ref = user_ref.collection('menu')
