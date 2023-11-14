@@ -1,0 +1,45 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<title>Utilizatori</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="label"><div class="text-wrapper">Utilizatori</div></div>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>Nume utilizator</th>
+        <th>Tipul utilizatorului</th>
+    </tr>
+    {% for user_id, user_data in all_users.items() %}
+    {% if user_data['type']=='customer' %}
+    <tr>
+        <td>{{user_id}}</td>
+        <td>{{user_data['name']}}</td>
+        <td>
+                Client
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+    {% for user_id, user_data in all_users.items() %}
+    {% if user_data['type']=='shop-owner' %}
+    <tr>
+        <td>{{user_id}}</td>
+        <td>{{user_data['name']}}</td>
+        <td>
+                <p style="margin-bottom:5px">Proprietar cafenea</p>
+                Cafenele:
+                {% for shop in user_data['shops'] %}
+                        {{ shop }}{% if not loop.last %}, {% endif %}
+                {%endfor%}
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+
+
+{% endblock %}

@@ -1,18 +1,18 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Coffee shops</title>
+<title>Cafenelele mele</title>
 {% endblock %}
 
 {% block body %}
 <div class="content">
     
-    <div class="label"><div class="text-wrapper">Cafenele</div></div>
+    <div class="label"><div class="text-wrapper">Cafenelele mele</div></div>
     
     <div style="display: flex; flex-direction: row;padding:20px; width:100%; justify-items: center;">
         
         <div style="width:20%;"> <!-- butoane bro-->
-            <a href="/my-shops"><button class="shops-button">All shops</button><br></a>
+            <a href="/my-shops"><button class="shops-button">Cafenelele mele</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
             {% set good_name = acceptable_shop_name(shop_data['name']) %}
             <a href="/{{good_name}}"><button class="shops-button">{{shop_data['name']}}</button><br></a>
@@ -25,8 +25,8 @@
                 <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"  style="margin-right:5px">
                 <div class="text-wrapper">
                     <p>{{ shop_data.name }}</p>
-                    Phone number: {{ shop_data.phone_nr }}
-                    Address: {{ shop_data.address }}
+                    {{ shop_data.phone_nr }}<br>
+                    {{ shop_data.address }}
                     <button class = "seemore" data-modal-target="#modal-{{ shop_name }}">Vezi mai mult</button> 
                     <div class="modal" id="modal-{{ shop_name }}">
 
@@ -40,7 +40,7 @@
                             </div>
                             
                             <p class = "menu">Meniu</p>
-                            <p class = "coffees">Coffees:</p>
+                            <p class = "coffees">Cafea</p>
                             <ul class = "items" style="margin-left:50px; list-style: none;">
 
                                 {% for menu_item in shop_data.menu %}
@@ -48,26 +48,26 @@
                                     <li style="display:flex; flex-direction: row;">
                                         <div style="font-size:18px;">
                                             {% if menu_item.date_added==todays_date %}
-                                            ★ New ★&nbsp;
+                                            ★ Nou ★&nbsp;
                                             {%endif%}
                                         </div>
-                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name }} ...................... {{ menu_item.price }}lei</div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
 
-                            <p class = "desserts">Desserts:</p>
+                            <p class = "desserts">Desert</p>
                             <ul class = "items" style="margin-left:50px; list-style: none;">
                                 {% for menu_item in shop_data.menu %}
                                     {% if menu_item['type']=='desert' %}
                                     <li style="display:flex; flex-direction: row;">
                                         <div style="font-size:18px;">
                                             {% if menu_item.date_added==todays_date %}
-                                            ★ New ★&nbsp;
+                                            ★ Nou ★&nbsp;
                                             {%endif%}
                                         </div>
-                                        <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name }} ...................... {{ menu_item.price }}lei</div>
                                     </li>
                                     {% endif %}
                                 {% endfor %}
@@ -81,14 +81,14 @@
             {% endfor %}
     </div>
 
-    <div style="margin-right:40px;margin-left:20px;">
+    <div style="margin-right:50px;margin-left:20px;">
     <form action="/my-shops" method="POST" style="text-align: center;">
         <div class = "edit-form">
-            Coffeeshop name: <input type="text" name="name" id="name"><br>
-            Phone number: <input type="text" name="phone_number" id="phone_number"><br>
-            Address: <input type="text" name="address" id="address"><br>
+            Numele cafenelei: <input type="text" name="name" id="name"><br>
+            Număr de telefon: <input type="text" name="phone_number" id="phone_number"><br>
+            Adresa: <input type="text" name="address" id="address"><br>
             <input type="hidden" name="form_type" value="add_shop">
-            <input type="submit" class="submit" value="Add shop">
+            <input type="submit" class="submit" value="Creează cafeneaua">
         </div>
     </form>
     </div>

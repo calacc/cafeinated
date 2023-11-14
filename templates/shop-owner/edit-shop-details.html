@@ -13,12 +13,12 @@
     <div style="display: flex; flex-direction: row;padding:20px;">
 
         <div style="width:20%;"> <!-- butoane bro-->
-            <a href="/my-shops"><button class="shops-button">All Shops</button><br></a>
+            <a href="/my-shops"><button class="shops-button" style="margin-top:10px">Cafenelele mele</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
             {% set good_name = acceptable_shop_name(shop_data['name']) %}
-            <a href="/{{good_name}}"><button class="shops-button">{{shop_data['name']}}</button><br></a>
+            <a href="/{{good_name}}"><button class="shops-button" style="margin-top:10px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
-        </div> 
+        </div>
 
 
     <div style="display:flex">
@@ -38,11 +38,10 @@
         
         <div style="margin-left:50px">
     
-            <h2>Coffee shop editing area</h2>
+            <h2>Opțiuni de editare</h2>
             <div class = "edit-form">
                 {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
-                <a href="/{{good_name}}"><button class = "submit-order">Back to coffee shop page</button></a><br>
-                <a href="/edit-menu/{{good_name}}"><button class = "submit-order">Edit menu items</button></a>
+                <a href="/edit-menu/{{good_name}}"><button class = "submit-order">Editează meniul</button></a>
             </div>
         
             </div>                   

@@ -22,20 +22,21 @@ body{
   justify-content: flex-end;
   align-items: center;
   list-style:none;
-  text-align:right;
+  text-align:center;
 }
 .nav li{
   display:inline-block;
-	width:15%;
+	width:13%;
 	margin:0px;
   padding:20px;
 	text-decoration:none;
 	font-size:18px;
 	font-family: "Lexend-Medium", Helvetica;
 	font-weight:bold;
+  margin-right:10px;
 }
 .nav a{
-  display: flex;
+  /* display: flex; */
   text-decoration:none;
 	color:#FFFFFF;
 }
@@ -199,7 +200,7 @@ body{
   font-family: "Lexend Zetta-Black", Helvetica;
   font-weight: 900;
   color: #260507;
-  font-size: 100px;
+  font-size: 70px;
 }
 
 .about-us-text {
@@ -361,6 +362,7 @@ a
 }
 
 input {
+  padding-left:5px;
   display:flex;
   margin-top:10px;
   justify-content:flex-start;
@@ -406,7 +408,7 @@ input[type=text] {
 
 .shops-button
 {
-  display:flex;
+  /* display:flex; */
   justify-content:center;
   background-color: #260507;
   margin-top:20px;
@@ -417,7 +419,6 @@ input[type=text] {
   vertical-align: middle;
   line-height: 30px;
   width: 130px;
-  height: 30px;
   font-size: 20px;
   color: white;
   border-radius: 10px;
@@ -450,6 +451,7 @@ input[type=text] {
   border-radius: 10px;
   border:0;
   cursor:pointer;
+  margin: 10px;
 }
 
 .submit-order:hover
@@ -652,7 +654,7 @@ h1,h2,h3,p
 }
 
 .close-button{
-  position: relative;
+  position: absolute;
   bottom: 0;
   cursor: pointer;
   background-color:transparent;
@@ -684,4 +686,26 @@ h1,h2,h3,p
 #overlay.active{
   opacity: 1;
   pointer-events: all;
+}
+
+table {
+  font-family: "Lexend-Regular", Helvetica;
+  border-collapse: collapse;
+  border-radius: 15px;
+  border: none;
+  width: 80%;
+  margin:30px;
+  margin-left:5%;
+  overflow: hidden;
+}
+
+td, th {
+  text-align: left;
+  padding: 8px;
+  border: 2px solid #f2ad59;
+  background-color: rgba(226, 153, 65, 0.5)
+}
+
+tr:nth-child(even) {
+  background-color: rgba(229, 172, 103, 0.5)
 }

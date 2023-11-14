@@ -6,10 +6,10 @@
 
 {% block body %}
 
-<div class="label"><div class="text-wrapper">Coșul Meu</div></div>
+<div class="label"><div class="text-wrapper">Coșul meu</div></div>
 <div style="display: flex; flex-direction: column;">
 
-<div style="display: flex; flex-direction: row; margin-left:5%;margin-top:2%">
+<div style="display: flex; flex-direction: row; margin-left:5%;margin-top:2%; margin-bottom:-20px">
     <a href="/shopping-cart"><button class="buttons-cart" style="margin-left: 5%;">Coșul meu de cumpărături</button><br></a>
     <a href="/my-orders"><button class="buttons-cart" style="margin-left: 5%;">Comenzile mele</button></a>
 </div>
@@ -18,29 +18,30 @@
     {% if items_clean %}
     {% for shop, shop_items in items_clean.items()%}
         <ul>
-            <span class = "title-cart" style="margin-left: 0px;">Cafenea: {{shop}}</span>
+            <span class = "title-cart" style="margin: 20px 0px 0px 0px;">{{shop}}</span>
             {% for item in shop_items %}
-                <li style = "list-style-type: none;display:flex;align-items: row;"> 
-                    <span class = "items">{{ item.name }} - ${{ item.price }}</span>
+                <li style = "list-style-type: none;display:flex;align-items: row; margin-left:2%"> 
+                    <span class = "items">{{ item.name }} - {{ item.price }}lei </span>
 
                     <form action="/remove_from_cart" method="POST">
                         <input type="hidden" name="form_type" value="remove_item_from_cart">
                         <input type="hidden" name="name" value="{{ item.name }}">
                         <input type="hidden" name="shop" value="{{ shop }}">
-                        <button type="submit" class="delete-item">&times;</button>
+                        <button type="submit" class="delete-item" style="margin-top:3px"> &nbsp;&times; </button>
                     </form>
                 </li>
             {% endfor %}
         </ul>
 
         {% endfor %}
-
+        {% set price = get_cart_total_price() %}
+        <p class = "items" style="margin-top:20px; color: #260507">Preț total: {{price}}</p>
         <form action="/place-order" method="POST">
             <input type="hidden" name="form_type" value="place_order">
             <button type="submit" class="submit-order">Trimite comanda!</button>
         </form>
     {% else %}
-        <p style="margin-left: 0;" class = "title-status">Coșul tău de cumpărături este gol!</p>
+        <p style="margin-left: 0; margin-top:10px" class = "title-status">Coșul tău de cumpărături este gol!</p>
     {% endif %}
 </div>
 

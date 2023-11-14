@@ -13,10 +13,10 @@
     <div style="display: flex; flex-direction: row;padding:20px;">
 
         <div style="width:20%;"> <!-- butoane bro-->
-            <a href="/my-shops"><button style="height:30px">all shops</button><br></a>
+            <a href="/my-shops"><button class="shops-button" style="margin-top:10px">Cafenelele mele</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
             {% set good_name = acceptable_shop_name(shop_data['name']) %}
-            <a href="/{{good_name}}"><button style="height:30px">{{shop_data['name']}}</button><br></a>
+            <a href="/{{good_name}}"><button class="shops-button" style="margin-top:10px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
         
@@ -26,46 +26,42 @@
             
             
             <div>
-                <p class = "menu">Editare meniu</p>
                 {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
             <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
                 <input type="hidden" name="form_type" value="update_menu">
                 <input type="hidden" name="shop_id" value="{{ good_name }}">
                 {% for menu_item in this_shop_data.menu %}
                     <div style="display:flex;">
-                    <div>Nume produs: <input type="text" name="item_name_{{ loop.index0 }}" 
-                        id="item_name_{{ loop.index0 }}" value="{{menu_item.name}}"></div>
-                    <div>Preț: <input type="text" name="price_{{ loop.index0 }}" 
+                    <div style="margin-right:5px"><input type="text" name="item_name_{{ loop.index0 }}" 
+                        id="item_name_{{ loop.index0 }}" value="{{menu_item.name}}"
+                        style="width:300px"></div>
+                    <div style="margin-right:5px;"><input type="text" name="price_{{ loop.index0 }}" 
                         id="price_{{ loop.index0 }}" value="{{menu_item.price}}"
                         style="width:100px"></div>
-                    <div>Tip produs: <input type="text" name="item_type_{{ loop.index0 }}" 
-                        id="item_type_{{ loop.index0 }}" value="{{menu_item.type}}"></div>
+                    <div style="margin-right:5px;"><input type="text" name="item_type_{{ loop.index0 }}" 
+                        id="item_type_{{ loop.index0 }}" value="{{menu_item.type}}"
+                        style="width:100px"></div>
                     <br>
-                    <!-- <div>
-                        <form action="/edit-menu/{{good_name}}/delete-item/{{ menu_item.name }}" method="POST">
-                            <button type="submit" name="delete_item" 
-                                value="delete_{{ loop.index0 }}"
-                                style="margin-top:35px">&times;</button>
-                        </form>
-                    </div> -->
                     </div>
                 {% endfor %}
-                <input type="submit" value="Salvează modificările">
+                <input type="submit" value="Salvează modificările" class="shops-button" style="width:300px; margin-left:0">
             </form>
 
         
             
         </div> 
-        <div style="margin-top:40px">
+        <div>
             
                 {% for menu_item in this_shop_data.menu %}
                 <div style="display:flex;">
-                    <div style="margin-top:20px">
+                    <div style="margin:0">
                         <form action="/edit-menu/{{good_name}}/delete-item/{{ menu_item.name }}" method="POST">
                             <input type="hidden" name="form_type" value="delete_{{loop.index0}}">  
                             <button type="submit" name="delete_{{loop.index0}}" 
                                 value="delete_{{ loop.index0 }}"
-                                style="margin-top:35px">&times;</button>
+                                style="margin-top:21px; margin-bottom:11px; 
+                                background-color:#f2ad59;border:1px solid #f2ad59;
+                                font-weight: bolder;">&times;</button>
                         </form>
                     </div>
                     </div>
@@ -73,7 +69,6 @@
         </div>
 
         <div style="margin-left:50px">
-        <br><h3>Adaugă un produs nou</h3><br>
         {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
         <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
             Nume produs: <input type="text" name="item_name" id="item_name"><br>
@@ -81,16 +76,15 @@
             Tip produs: <input type="text" name="item_type" id="item_type"><br>
             <input type="hidden" name="form_type" value="add_menu_item">
             <input type="hidden" name="shop_id" value="{{ this_shop_data.name }}">
-            <input type="submit" value="Adaugă produsul">
+            <input type="submit" value="Adaugă produsul"  class="shops-button" style="width:300px; margin-left:0">
         </form>
         </div>
 
         <div style="margin-left:50px">
     
-            <h2>Coffee shop editing area</h2>
+            <h2>Opțiuni de editare</h2>
             {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
-            <a href="/{{good_name}}"><button>Back to coffee shop page</button></a><br>
-            <a href="/edit-shop/{{good_name}}"><button>Edit shop details</button></a>
+            <a href="/edit-shop/{{good_name}}"><button class="shops-button" style="width:200px; margin-left:5px">Editează detaliile cafenelei</button></a>
                 
         
         </div>                   

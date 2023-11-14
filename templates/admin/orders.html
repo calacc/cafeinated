@@ -1,0 +1,34 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<title>Comenzi</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="label"><div class="text-wrapper">Comenzi</div></div>
+<table>
+    <tr>
+        <th>Id comandă</th>
+        <th>Nume client</th>
+        <th>Data</th>
+        <th>Conținutul comenzii</th>
+    </tr>
+    {% for order_id, order_data in shop_orders.items() %}
+    <tr>
+        <td>{{order_id}}</td>
+            {% set name = get_user_name(order_data['user_id']) %}
+        <td>{{name}}</td>
+        <td>{{order_data['date']}}</td>
+        <td>
+            {% for shop_id, shop_data in order_data['shops'].items() %}
+                {{ shop_data['shop_name'] }}: 
+                {% for item in shop_data['items'] %}
+                    {{ item['name'] }}{% if not loop.last %}, {% endif %}
+                {% endfor %}{% if not loop.last %}; {% endif %}
+            {%endfor%}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

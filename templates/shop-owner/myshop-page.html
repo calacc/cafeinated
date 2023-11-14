@@ -1,7 +1,7 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Coffee shops</title>
+<title>{{ this_shop_data.name }}</title>
 {% endblock %}
 
 {% block body %}
@@ -9,17 +9,17 @@
 
 <div class="content">
     
-    <div class="label"><div class="text-wrapper">Cafenele</div></div>
+    <div class="label"><div class="text-wrapper" style="font-size:70px">{{ this_shop_data.name }}</div></div>
     
     <div style="display: flex; flex-direction: row;padding:20px;">
         
         <div style="width:20%;"> <!-- butoane bro-->
-            <a href="/my-shops"><button class="shops-button">All shops</button><br></a>
+            <a href="/my-shops"><button class="shops-button" style="margin-top:10px">Cafenelele mele</button><br></a>
             {% for shop_name, shop_data in shops.items() %}
             {% set good_name = acceptable_shop_name(shop_data['name']) %}
-            <a href="/{{good_name}}"><button class="shops-button">{{shop_data['name']}}</button><br></a>
+            <a href="/{{good_name}}"><button class="shops-button" style="margin-top:10px">{{shop_data['name']}}</button><br></a>
             {%endfor%}
-        </div>  
+        </div>
 
 
     <div style="display:flex">
@@ -27,15 +27,13 @@
     
     
     <div>
-    <div class = "details" style="color:#220708; font-weight: bolder; font-size:40px;">
-        {{ this_shop_data.name }}<br>
-    </div>
-    <p class = "address" style="font-size: 25px;">{{ this_shop_data.address }}<br>
-        Phone number: {{ this_shop_data.phone_nr }}</p>
+    <a class = "address">
+        {{ this_shop_data.address }}<br>
+        {{ this_shop_data.phone_nr }}</a>
 
-    
+    <br>
     <p class = "menu">Meniu</p>
-    <p class = "coffees" style="color:#220708;">Coffees:</p>
+    <p class = "coffees" style="color:#220708;">Cafea</p>
     <ul class = "items" style="margin-left:50px; list-style: none;">
 
         {% for menu_item in this_shop_data.menu %}
@@ -43,26 +41,26 @@
             <li style="display:flex; flex-direction: row;">
                 <div style="font-size:18px;">
                     {% if menu_item.date_added==todays_date %}
-                    ★ New ★&nbsp;
+                    ★ Nou ★&nbsp;
                     {%endif%}
                 </div>
-                <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                <div>{{ menu_item.name }} ...................... {{ menu_item.price }}lei</div>
             </li>
             {% endif %}
         {% endfor %}
     </ul>
 
-    <p class = "desserts" style="color:#220708;">Desserts:</p>
+    <p class = "desserts" style="color:#220708;">Desert</p>
     <ul class = "items" style="margin-left:50px; list-style: none;">
         {% for menu_item in this_shop_data.menu %}
             {% if menu_item['type']=='desert' %}
             <li style="display:flex; flex-direction: row;">
                 <div style="font-size:18px;">
                     {% if menu_item.date_added==todays_date %}
-                    ★ New ★&nbsp;
+                    ★ Nou ★&nbsp;
                     {%endif%}
                 </div>
-                <div>{{ menu_item.name }} ...................... ${{ menu_item.price }}</div>
+                <div>{{ menu_item.name }} ...................... {{ menu_item.price }}lei</div>
             </li>
             {% endif %}
         {% endfor %}
@@ -72,11 +70,11 @@
 
     <div style="margin-left:50px">
 
-    <h2>Coffee shop editing area</h2>
+    <h2>Opțiuni de editare</h2>
     <div class = "edit-form">
         {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
-        <a href="/edit-shop/{{good_name}}"><button class = "submit-order">Edit shop details</button></a><br>
-        <a href="/edit-menu/{{good_name}}"><button class = "submit-order">Edit menu items</button></a>
+        <a href="/edit-shop/{{good_name}}"><button class="shops-button" style="width:200px; margin-left:5px">Editează detaliile cafenelei</button></a><br>
+        <a href="/edit-menu/{{good_name}}"><button class="shops-button" style="width:200px; margin-left:5px; margin-top:10px">Editează meniul</button></a>
     </div>
 
     </div>                 

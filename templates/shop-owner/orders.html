@@ -1,11 +1,11 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Active orders</title>
+<title>Comenzi active</title>
 {% endblock %}
 
 {% block body %}
-<div class="label"><div class="text-wrapper">Comenzi</div></div>
+<div class="label"><div class="text-wrapper">Comenzi active</div></div>
 {% for shop_id, shop_data in shop_orders.items() %}
     <h1 style = "margin-left: 5%;"color:#260507;>{{ shop_id }}</h1>
     <ul class="items" style="margin-left: 5%;">
@@ -13,13 +13,13 @@
             <br>
             {{ order_id}}
             {% for item in shop_order['items'] %}
-                <li style ="list-style-type: none;">{{ item['name'] }} - ${{ item['price'] }}</li>
+                <li style ="list-style-type: none;">{{ item['name'] }} - {{ item['price'] }}lei</li>
             {% endfor %}
 
             <form action="/orders" method="POST">
                 <input type="hidden" name="order_id" value="{{ order_id }}">
                 <input type="hidden" name="shop_id" value="{{ shop_id }}">
-                <button type="submit" class="submit-order">Complete order</button>
+                <button type="submit" class="submit-order">Finalizează comanda</button>
             </form>
         {% endfor %}
     </ul>

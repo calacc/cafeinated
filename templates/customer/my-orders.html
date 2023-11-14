@@ -26,8 +26,9 @@
         <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
         <ul style = "list-style-type: none;">
             {% for item in order['items'] %}
-            <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - {{ item.price }}lei</li>
             {%endfor%}
+            <p class = "items" style="margin-top:20px; color: #260507"> Preț total: {{order.total_price}}</p>
         </ul>
         
         <br>
@@ -42,7 +43,7 @@
     <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
         <ul style = "list-style-type: none;">
             {% for item in order['items'] %}
-            <li class="items" style = "list-style-type: none;">{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
+            <li class="items" style = "list-style-type: none;">{{ item.shop }}: {{ item.name }} - {{ item.price }}lei</li>
             {%endfor%}
         </ul>
         <br>
