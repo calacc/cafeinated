@@ -1,0 +1,22 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<title>Home</title>
+{% endblock %}
+
+{% block body %}
+<div class = "box">
+    <img src="{{ url_for('static', filename='img/coffee_center.svg') }}"/>
+    <div class="group">
+        <p class="main-text">
+            <span class="text-wrapper">Ți-e poftă de cafea?<br />Cum ar fi să o primești<br /></span>
+            <span class="span">gratis?</span>
+        </p>
+        <p class="account-text">
+            <span class="text-wrapper-2">Fă-ți cont</span>
+            <span class="text-wrapper-3"> și află mai multe despre ofertele noastre!</span>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

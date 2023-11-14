@@ -18,7 +18,10 @@
         </div> 
         
         <div style="display:flex">
+
+
             <div class="items-table">
+
                 {% set good_name = acceptable_shop_name(this_shop_data['name']) %}
             <form action="/edit-menu/{{good_name}}" method="POST" style="font-weight: 700; font-size: 15px; ">
                 <input type="hidden" name="form_type" value="update_menu">
