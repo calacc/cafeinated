@@ -30,8 +30,10 @@
                 </li>
             {% endfor %}
         </ul>
-
+        
         {% endfor %}
+        {% set price = get_cart_total_price() %}
+        <p class = "items" style="margin-top:20px; color: #260507">Preț total: {{price}}</p>
 
         <form action="/place-order" method="POST">
             <input type="hidden" name="form_type" value="place_order">

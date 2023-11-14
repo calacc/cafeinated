@@ -28,6 +28,8 @@
             {% for item in order['items'] %}
             <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - ${{ item.price }}</li>
             {%endfor%}
+            <p class = "items" style="margin-top:20px; color: #260507"> Preț total: {{order.total_price}}</p>
+
         </ul>
         
         <br>

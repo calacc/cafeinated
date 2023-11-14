@@ -637,3 +637,25 @@ input[type=text] {
   opacity: 1;
   pointer-events: all;
 }
+
+table {
+  font-family: "Lexend-Regular", Helvetica;
+  border-collapse: collapse;
+  border-radius: 15px;
+  border: none;
+  width: 80%;
+  margin:30px;
+  margin-left:5%;
+  overflow: hidden;
+}
+
+td, th {
+  text-align: left;
+  padding: 8px;
+  border: 2px solid #f2ad59;
+  background-color: rgba(226, 153, 65, 0.5)
+}
+
+tr:nth-child(even) {
+  background-color: rgba(229, 172, 103, 0.5)
+}

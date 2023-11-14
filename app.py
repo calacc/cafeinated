@@ -36,6 +36,7 @@ cred = credentials.Certificate("coffeeshops.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+
 # map frame stuff
 
 def geocode_address(address):
@@ -155,6 +156,12 @@ def add_to_cart():
 
     return redirect('/coffeeshops')  
 
+def get_cart_total_price():
+    cart = session.get('cart', [])
+    total_price=0
+    for item in cart:
+        total_price+=item['price']
+    return total_price
 @app.route('/remove_from_cart/<int:index>', methods=['POST'])
 def remove_from_cart(index):
     cart_copy = session['cart'].copy()
@@ -172,7 +179,9 @@ def shopping_cart():
             items_clean[item['shop']]=[]
         items_clean[item['shop']].append(item)
     print(items_clean)
-    return render_template('customer/shopping-cart.html', items_clean=items_clean)
+    return render_template('customer/shopping-cart.html', 
+                           items_clean=items_clean,
+                           get_cart_total_price=get_cart_total_price)
 
 @app.route('/place-order', methods=['POST'])
 def place_order():
@@ -182,12 +191,16 @@ def place_order():
     current_date = datetime.date.today()
     date_list = [str(current_date.year), str(current_date.month), str(current_date.day)]
     date_added = ' '.join(date_list)
+    total_price=0
+    for item in cart:
+        total_price+=item['price']
     order_data = {
         'user_id': user_id,
         'items': cart,
         'status': 0, # 0-not ready, 1-being delivered, 2-arriving soon, 3-delivered
         'order_id': order_id,
-        'date': date_added
+        'date': date_added,
+        'total_price': total_price
     }
     order_ref = db.collection('Orders').add(order_data)
     session.pop('cart', None)
@@ -417,6 +430,10 @@ def login():
             user=auth.sign_in_with_email_and_password(email, password)
             session['user']=email
             session['pass']=password
+            if email=='admin@cafeinated.com':
+                session['admin']=True
+            else: 
+                session['admin']=False
             return redirect('/')
         except:
             return 'failed to log in'
@@ -435,6 +452,8 @@ def logout():
 @app.route('/')
 def home(): 
     if 'user' in session:
+        if session['admin']==True:
+            return render_template('admin/home.html')
         user_type = get_user_type(session['user'])
         if user_type=='customer':
             return render_template('customer/home.html')
@@ -444,6 +463,64 @@ def home():
             return render_template('delivery/home.html')
     else:
         return render_template('not-logged-in/home.html')
+
+@app.route('/all-users')
+def all_users():
+
+    users = [ user.to_dict() for user in  db.collection('Users').stream()]
+    shops_stream = db.collection("Shops").stream()
+    all_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
+    all_shops_list = list(all_shops.keys())
+    shop_content = {shop_id: {'shop_name': shop_data['name'], 'owner': shop_data['owner']} for shop_id, shop_data in all_shops.items()}
+
+    all_users={}
+    # print(active_orders)
+    for user in users:
+        user_mail=user['email']
+        if user_mail not in ['rider@cafeinated.com', 'admin@cafeinated.com']:
+            user_name=user['name']
+            user_type=user['type']
+            user_phonenr=user['phonenr']
+            shops=[]
+            if user_type=='shop-owner':
+                for shopid, shopdata in shop_content.items():
+                    if shopdata['owner']==user_mail:
+                        shops.append(shopdata['shop_name'])
+            all_users.update({user_mail: {'name': user_name, 'type': user_type, 'phonenr':user_phonenr, 'shops': shops}})
+            
+    return render_template('admin/users.html',all_users=all_users)
+
+@app.route('/all-orders')
+def all_orders():
+    shops_stream = db.collection("Shops").stream()
+    all_shops = {shop.id.replace(" ", " "): shop.to_dict() for shop in shops_stream}
+    all_shops_list = list(all_shops.keys())
+    shop_content = {shop_id: {'shop_name': shop_data['name'], 'items': [], 'address': shop_data['address']} for shop_id, shop_data in all_shops.items()}
+
+    active_orders = [ order.to_dict() for order in  db.collection('Orders').stream()]
+    shop_orders={}
+    # print(active_orders)
+    for order in active_orders:
+        order_id = order['order_id']
+        if order_id not in shop_orders:
+            shop_orders[order_id] = {'shops': {}, 'date': order['date'], 'status': order['status'],
+                                      'user_id': order['user_id']}
+
+        for item in order['items']:
+            shop_id = item['shop']
+            if shop_id not in shop_orders:
+                shop_orders[order_id]['shops'][shop_id] = {
+                    'shop_name': shop_content[shop_id]['shop_name'],
+                    'items':[], 
+                    'address':shop_content[shop_id]['address']
+                }
+            copied_item = item.copy()
+            shop_orders[order_id]['shops'][shop_id]['items'].append(copied_item)
+    return render_template('admin/orders.html',shop_orders=shop_orders,
+                                can_complete_order=can_complete_order,
+                                get_user_address=get_user_address,
+                                get_user_phonenr=get_user_phonenr,
+                                get_user_name=get_user_name)
 
 @app.route('/about-us')
 def about_us():

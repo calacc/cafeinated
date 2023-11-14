@@ -26,7 +26,7 @@
                 Adresa magazinului: {{ shop_data['address'] }}<br><br>
                 <ul type="none">
                 {% for item in shop_data['items'] %}
-                    <li>{{ item['name'] }} - ${{ item['price'] }}</li>
+                    <li>{{ item['name'] }}</li>
                 {% endfor %}
                 </ul>
                 <br>
