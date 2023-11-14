@@ -11,6 +11,30 @@
         {% for order_id, order_data in shop_orders.items() %}
             <br>
             Id comandă: {{order_id}}<br>
+            Status comandă:
+            {% if can_complete_order(order_data) %}
+                {% if order_data['status']==0 %}
+                <form action="/orders" method="post">
+                    <input type="hidden" name="form_type" value="complete_order">
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit" class="submit-order">Comanda este gata</button><br>
+                </form>
+                {%endif%}
+                {% if order_data['status']==1 %}
+                <form action="/orders" method="post">
+                    <input type="hidden" name="form_type" value="order_arriving_soon">
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit" class="submit-order">Comanda ajunge imediat</button><br>
+                </form>
+                {%endif%}
+                {% if order_data['status']==2 %}
+                <form action="/orders" method="post">
+                    <input type="hidden" name="form_type" value="deliver_order">
+                    <input type="hidden" name="order_id" value="{{ order_id }}">
+                    <button type="submit" class="submit-order">Comanda a fost livrată</button>
+                </form>
+                {% endif %}
+            {% endif %}
 
             {% set address = get_user_address(order_data['user_id']) %}
             Adresă de livrare: {{address}}<br>
@@ -32,29 +56,6 @@
                 <br>
             {%endfor%}
 
-            {% if can_complete_order(order_data) %}
-                {% if order_data['status']==0 %}
-                <form action="/orders" method="post">
-                    <input type="hidden" name="form_type" value="complete_order">
-                    <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit" class="submit-order">Comanda este gata</button><br>
-                </form>
-                {%endif%}s
-                {% if order_data['status']==1 %}
-                <form action="/orders" method="post">
-                    <input type="hidden" name="form_type" value="order_arriving_soon">
-                    <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit" class="submit-order">Comanda ajunge imediat</button><br>
-                </form>
-                {%endif%}
-                {% if order_data['status']==2 %}
-                <form action="/orders" method="post">
-                    <input type="hidden" name="form_type" value="deliver_order">
-                    <input type="hidden" name="order_id" value="{{ order_id }}">
-                    <button type="submit" class="submit-order">Comanda a fost livrată</button>
-                </form>
-                {% endif %}
-            {% endif %}
 
         {% endfor %}
     </ul>

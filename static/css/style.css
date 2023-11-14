@@ -104,7 +104,7 @@ body{
   flex-wrap: wrap;
   flex-direction: row;
   justify-content:center;
-  margin: 10px;
+  margin-left: 50px;
 }
 
 .shops-child{
@@ -139,12 +139,21 @@ body{
   font-size: 15px;
 }
 
+.content-menu-items
+{
+  display: column;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /*Main page*/
 .box {
   display: flex;
   justify-content:center;
   align-items:center;
-  margin-top: calc(100% - 90%);;
+  margin-top: calc(100% - 95%);;
 }
 .box img {
   width: 400px;
@@ -190,7 +199,7 @@ body{
   display:column;
   justify-content:flex-start;
   margin-left:5%;
-  margin-top:2%;
+  margin-top:0.2px;
 }
 
 .label .text-wrapper {
@@ -256,6 +265,15 @@ body{
   display:flex;
   justify-content:flex-start;
   margin-left:5%;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.edit-form
+{
+  display:column;
+  justify-content:flex-start;
   font-family: "Lexend-Regular", Helvetica;
   font-weight: 700;
   font-size: 20px;
@@ -395,6 +413,33 @@ input[type=text] {
   border : 0;
 }
 
+.shops-button
+{
+  display:flex;
+  justify-content:center;
+  background-color: #260507;
+  margin-top:20px;
+  margin-left:30%;
+  font-family: "Lexend-Regular", Helvetica;
+  font-weight: 700;
+  text-align: center; 
+  vertical-align: middle;
+  line-height: 30px;
+  width: 130px;
+  height: 30px;
+  font-size: 20px;
+  color: white;
+  border-radius: 10px;
+  border:0;
+  cursor:pointer;
+}
+.shops-button:hover
+{
+  color:#260507;
+  background-color: #e3c57e;
+  border : 0;
+}
+
 .submit-order
 {
   display:flex;
@@ -485,15 +530,23 @@ input[type=text] {
   background-color: rgba(229, 172, 103, 0.5);;
   backdrop-filter: blur(10px);
   border-radius: 25px;
-  height: 700px;
-  width: 1200px;
+  height: 80%;
+  width: 80%;
   overflow: auto;
+}
+
+.items-table
+{
+  display: flex;
+  color:#220708;
+  font-family: "Lexend Zetta-Black", Helvetica;
 }
 
 .details
 {
   display:flex;
   flex-direction: row;
+  font-family: "Lexend Zetta-Black", Helvetica;
   font-size:65px;
   color:white;
   margin-left:30px;
@@ -503,6 +556,7 @@ input[type=text] {
 {
   display:flex;
   flex-direction: row;
+  font-family: "Lexend Zetta-Black", Helvetica;
   margin-bottom: 2%;
   font-size:32px;
   font-weight: normal;
@@ -515,6 +569,7 @@ input[type=text] {
   display:flex;
   flex-direction: row;
   margin-top: 2%;
+  font-family: "Lexend Zetta-Black", Helvetica;
   margin-bottom: 2%;
   font-size:28px;
   color:white;
@@ -554,9 +609,10 @@ input[type=text] {
 {
   display:flex;
   flex-direction: row;
+  font-family: "Lexend Zetta-Black", Helvetica;
   font-size:25px;
-  font-weight: 100;
-  color:white;
+  font-weight: bold;
+  color:#220708;
   margin-left:30px;
 }
 
@@ -565,6 +621,7 @@ input[type=text] {
   font-size:24px;
   font-weight: lighter;
   color:white;
+  font-family: "Lexend Zetta-Black", Helvetica;
 }
 
 .addtomenu{
@@ -576,13 +633,20 @@ input[type=text] {
   color:white;
 }
 
+h1,h2,h3,p
+{
+  font-family: "Lexend Zetta-Black", Helvetica;
+  color:#260507;
+}
+
 .desserts
 {
   display:flex;
+  font-family: "Lexend Zetta-Black", Helvetica;
   flex-direction: row;
   font-size:25px;
-  font-weight: 100;
-  color:white;
+  font-weight: bold;
+  color:#220708;
   margin-left:30px;
 }
 

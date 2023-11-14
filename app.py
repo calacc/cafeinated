@@ -52,7 +52,7 @@ def generate_map_embed_code(address):
     coordinates = geocode_address(address)
 
     if coordinates:
-        return f'<iframe width="600" height="450" frameborder="0" style="border:0; border-radius:10px" ' \
+        return f'<iframe width="400px" height="250px" frameborder="0" style="border:0; border-radius:10px; margin-top: calc(100% - 80%);" ' \
             f'src="https://www.google.com/maps/embed/v1/view?key=AIzaSyA4YbofL5tc2as0qsmjv3yDc556NaD3usE&center={coordinates[0]},{coordinates[1]}&zoom=20" allowfullscreen></iframe>'
     else:
         return '<p>Unable to generate map for the provided address.</p>'
@@ -162,9 +162,19 @@ def get_cart_total_price():
     for item in cart:
         total_price+=item['price']
     return total_price
-@app.route('/remove_from_cart/<int:index>', methods=['POST'])
-def remove_from_cart(index):
+  
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    name_del=request.form['name']
+    shop_del=request.form['shop']
+
     cart_copy = session['cart'].copy()
+    count=0
+    index=0
+    for item in cart_copy:
+        if item['name']==name_del and item['shop']==shop_del:
+            index=count
+        count=count+1
     removed_item = cart_copy.pop(index)
     session['cart'] = cart_copy
     return redirect('/shopping-cart')

@@ -1,7 +1,7 @@
 {% extends 'customer/base.html' %}
 
 {% block head %}
-<title>Coșul meu de cumpărături</title>
+<title>Coșul meu</title>
 {% endblock %}
 
 {% block body %}
@@ -23,8 +23,10 @@
                 <li style = "list-style-type: none;display:flex;align-items: row;"> 
                     <span class = "items">{{ item.name }} - ${{ item.price }}</span>
 
-                    <form action="{{ url_for('remove_from_cart', index=loop.index0) }}" method="POST">
+                    <form action="/remove_from_cart" method="POST">
                         <input type="hidden" name="form_type" value="remove_item_from_cart">
+                        <input type="hidden" name="name" value="{{ item.name }}">
+                        <input type="hidden" name="shop" value="{{ shop }}">
                         <button type="submit" class="delete-item">&times;</button>
                     </form>
                 </li>

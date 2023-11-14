@@ -1,7 +1,7 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
-<title>Coffee shops</title>
+<title>Cafenele</title>
 {% endblock %}
 
 {% block body %}
@@ -40,7 +40,7 @@
                                             ★ New ★&nbsp;
                                             {%endif%}
                                         </div>
-                                        <div>{{ menu_item.name.ljust(50, '.')  }}${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name.ljust(50, '.')  }}RON{{ menu_item.price }}</div>
                                         <div>
                                         <form action="/add-to-cart" method="POST">
                                             <input type="hidden" name="item_name" value="{{ menu_item.name }}">
@@ -63,7 +63,7 @@
                                             ★ New ★&nbsp;&nbsp;
                                             {%endif%}
                                             </div>
-                                        <div>{{ menu_item.name.ljust(50, '.')  }}${{ menu_item.price }}</div>
+                                        <div>{{ menu_item.name.ljust(50, '.')  }}RON{{ menu_item.price }}</div>
                                         <div>
                                         <form action="/add-to-cart" method="POST">
                                             <input type="hidden" name="item_name" value="{{ menu_item.name }}">
