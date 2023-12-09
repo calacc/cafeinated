@@ -34,7 +34,9 @@
                     <button type="submit" class="submit-order">Comanda a fost livrată</button>
                 </form>
                 {% endif %}
-            {% endif %}
+            {% else %}
+            <button class="submit-order">Comanda nu este gata încă</button>
+            {%endif %}
 
             {% set address = get_user_address(order_data['user_id']) %}
             Adresă de livrare: {{address}}<br>
