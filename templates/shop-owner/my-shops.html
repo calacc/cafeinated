@@ -1,6 +1,7 @@
 {% extends 'shop-owner/base.html' %}
 
 {% block head %}
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Cafenelele mele</title>
 {% endblock %}
 
@@ -18,11 +19,18 @@
             <a href="/{{good_name}}"><button class="shops-button">{{shop_data['name']}}</button><br></a>
             {%endfor%}
         </div> 
-
-    <div class="shops-flex-container">
-        {% for shop_name, shop_data in shops.items() %}
+        
+        
+        <div class="shops-flex-container">
+            {% for shop_name, shop_data in shops.items() %}
             <div class="shops-child">
+                {% set folder_path = 'logos/' + shop_name %}
+                {% set image_urls = list_images(folder_path) %} 
+                {% if image_urls %}
+                <img class="coffee-photo" src="{{ image_urls[0] }}" alt="{{ shop_name }} Logo">
+                {%else%}
                 <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"  style="margin-right:5px">
+                {%endif%}
                 <div class="text-wrapper">
                     <p>{{ shop_data.name }}</p>
                     {{ shop_data.phone_nr }}<br>

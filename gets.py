@@ -1,7 +1,16 @@
-from __init__ import db
+from __init__ import db, mybucket
 
 from flask import session, abort
 from geopy.geocoders import Nominatim
+
+def list_images(folder_path):
+    # List files in the specified folder in Firebase Storage
+    blobs = mybucket.list_blobs(prefix=folder_path)
+    image_urls = [blob.public_url for blob in blobs]
+    return image_urls
+
+def acceptable_shop_name(name):
+    return name.replace(" ", "_")
 
 def get_cart_total_price():
     cart = session.get('cart', [])

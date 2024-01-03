@@ -3,8 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import pyrebase
 from firebase import firebase
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import firestore, storage, credentials
 
 
 app = Flask(__name__, template_folder='templates')
@@ -27,8 +26,10 @@ auth = firebase.auth()
 app.secret_key = 'secret'
 
 cred = credentials.Certificate("coffeeshops.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred, {'storageBucket': 'cafeinated-ab14e.appspot.com'})
 db = firestore.client()
+mybucket = storage.bucket()
+storage = firebase.storage()
 
 import gets
 import actions

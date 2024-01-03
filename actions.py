@@ -1,13 +1,11 @@
-from __init__ import app, db, auth
+from distutils.command import upload
+from __init__ import app, db, auth, mybucket
 import gets
 
-from flask import Flask, flash, redirect, render_template, request, url_for, session, abort
+from flask import Flask, flash, redirect, render_template, request, send_file, url_for, session, abort
 import datetime
 import uuid
-
-
-def acceptable_shop_name(name):
-    return name.replace(" ", "_")
+from firebase_admin import credentials, storage
 
 def create_new_shop(name, address, phone_nr, owner):
     new_shop={
@@ -167,7 +165,6 @@ def create_customer_account():
             user=auth.sign_in_with_email_and_password(email, password)
             
             create_new_user(address, email, name, phonenr, 'customer')
-            session['admin']=False
             session['user']=email
             return redirect('/')
         except:
@@ -179,16 +176,24 @@ def create_shop_owner_account():
     if('user' in session):
         return redirect('/')
     if request.method=='POST':
+        id_token = request.form.get('idToken')
         email = request.form.get('email')
         name = request.form.get('name')
         password = request.form.get('password')
         phonenr = request.form.get('phonenr')
         try:
+            # decoded_token = auth.verify_id_token(id_token)
+            # uid = decoded_token['uid']
+
+            # Check if the user already exists
+            # user = auth.get_user(uid)
+
+            # new_user = auth.create_user(uid=uid)
             user=auth.create_user_with_email_and_password(email, password)
             user=auth.sign_in_with_email_and_password(email, password)
             
             create_new_user('', email, name, phonenr, 'shop-owner')
-            session['admin']=False
+
             session['user']=email
             return redirect('/')
         except:
@@ -206,11 +211,6 @@ def login():
             user=auth.sign_in_with_email_and_password(email, password)
             session['user']=email
             session['pass']=password
-            session['admin']=False
-            if email=='admin@cafeinated.com':
-                session['admin']=True
-            else: 
-                session['admin']=False
             return redirect('/')
         except:
             return 'failed to log in'
@@ -268,7 +268,6 @@ def my_shops():
             shop_id=shop_data['name'].replace(" ", "")
             menu_items = db.collection("Shops").document(shop_id).collection("menu").stream()
             shop_data['menu'] = [menu_item.to_dict() for menu_item in menu_items]
-
             shops[shop_id]=shop_data
 
         current_date = datetime.date.today()
@@ -277,7 +276,8 @@ def my_shops():
         print(todays_date)
         return render_template('shop-owner/my-shops.html', shops=shops, todays_date=todays_date,
                                 generate_map_embed_code=gets.generate_map_embed_code,
-                                acceptable_shop_name=acceptable_shop_name)
+                                acceptable_shop_name=gets.acceptable_shop_name,
+                                list_images=gets.list_images)
 
 @app.route('/edit-menu/<string:shop_id>/delete-item/<string:item_name_to_delete>', methods=['POST'])
 def delete_item(shop_id,item_name_to_delete):
@@ -379,28 +379,42 @@ def edit_menu_details(shop_id):
         return render_template('shop-owner/edit-menu-items.html', shops=shops, 
                                this_shop_data=this_shop_data, 
                                generate_map_embed_code=gets.generate_map_embed_code,
-                               acceptable_shop_name=acceptable_shop_name)
+                               acceptable_shop_name=gets.acceptable_shop_name)
 
 @app.route('/edit-shop/<string:shop_id>', methods=['POST', 'GET'])
 def edit_shop_details(shop_id):
     if request.method == 'POST':
-        copy_id=shop_id.replace("_", "")
-        name = request.form['shop_name']
-        address = request.form['address']
-        phone_nr = request.form['phonenr']
-        shop_id = request.form['shop_id']
-        user_ref = db.collection(u'Shops').document(copy_id)
-        user_data = user_ref.get().to_dict()
-        menu=user_data.get('menu')
-        updated_shop={
-            'address': address,
-            'name': name, 
-            'owner': session['user'],
-            'phone_nr': phone_nr,
-            'menu': menu
-        }
-        doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
-        doc_ref.update(updated_shop)
+        form_type=request.form['form_type']
+        if form_type=='edit_shop':
+            copy_id=shop_id.replace("_", "")
+            name = request.form['shop_name']
+            address = request.form['address']
+            phone_nr = request.form['phonenr']
+            shop_id = request.form['shop_id']
+            user_ref = db.collection(u'Shops').document(copy_id)
+            user_data = user_ref.get().to_dict()
+            menu=user_data.get('menu')
+            updated_shop={
+                'address': address,
+                'name': name, 
+                'owner': session['user'],
+                'phone_nr': phone_nr,
+                'menu': menu
+            }
+            doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
+            doc_ref.update(updated_shop)
+            
+            file = request.files['file']
+            if file:
+                good_name=name.replace(" ", "")
+                filename = f"logos/{good_name}"
+                blob = mybucket.blob(filename)
+                blob.upload_from_string(file.read(), content_type=file.content_type)
+
+                file_url = blob.public_url
+
+                doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
+                doc_ref.update({'logo_url': file_url})
         return redirect(url_for('my_shop_page', shop_id=shop_id))
     else:
         shop_id=shop_id.replace("_", " ")
@@ -425,7 +439,22 @@ def edit_shop_details(shop_id):
         return render_template('shop-owner/edit-shop-details.html', shops=shops, 
                                this_shop_data=this_shop_data, 
                                generate_map_embed_code=gets.generate_map_embed_code,
-                               acceptable_shop_name=acceptable_shop_name)
+                               acceptable_shop_name=gets.acceptable_shop_name,
+                               list_images=gets.list_images)
+
+
+@app.route('/images/<shop_name>')
+def get_logo(shop_name):
+    try:
+        folder_path = f"logos/{shop_name}"
+        image_urls = gets.list_images(folder_path)
+        if image_urls:
+            return redirect(image_urls[0])
+        else:
+            return "No images found for the specified shop."
+
+    except Exception as e:
+        return str(e)
 
 @app.route('/<string:shop_id>', methods=['POST', 'GET'])
 def my_shop_page(shop_id):
@@ -467,7 +496,7 @@ def my_shop_page(shop_id):
         return render_template('shop-owner/myshop-page.html', shops=shops, 
                                this_shop_data=this_shop_data, 
                                generate_map_embed_code=gets.generate_map_embed_code,
-                               acceptable_shop_name=acceptable_shop_name)
+                               acceptable_shop_name=gets.acceptable_shop_name)
 
 @app.route('/all-users')
 def all_users():
@@ -481,10 +510,10 @@ def all_users():
     all_users={}
     # print(active_orders)
     for user in users:
-        user_mail=user['email']
-        if user_mail not in ['rider@cafeinated.com', 'admin@cafeinated.com']:
+        user_type=user['type']
+        if user_type not in ['admin', 'rider']:
+            user_mail=user['email']
             user_name=user['name']
-            user_type=user['type']
             user_phonenr=user['phonenr']
             shops=[]
             if user_type=='shop-owner':
@@ -494,6 +523,26 @@ def all_users():
             all_users.update({user_mail: {'name': user_name, 'type': user_type, 'phonenr':user_phonenr, 'shops': shops}})
             
     return render_template('admin/users.html',all_users=all_users)
+
+@app.route('/riders', methods=['POST', 'GET'])
+def rider():
+
+    if request.method == 'POST':
+        rider_name = request.form['rider_name']
+        rider_email = request.form['rider_email']
+    else:
+        users = [ user.to_dict() for user in  db.collection('Users').stream()]
+
+        riders={}
+        # print(active_orders)
+        for user in users:
+            user_type=user['type']
+            if user_type=='rider':
+                user_mail=user['email']
+                user_name=user['name']
+                riders.update({user_mail: {'name': user_name, 'email': user_mail}})
+                
+        return render_template('admin/riders.html',riders=riders)
 
 @app.route('/all-orders')
 def all_orders():

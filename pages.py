@@ -186,9 +186,18 @@ def index():
     if 'user' in session:
         user_type = gets.get_user_type(session['user'])
         if user_type=='customer':
-            return render_template('customer/shops.html', shops=shops, generate_map_embed_code=gets.generate_map_embed_code)
+            return render_template('customer/shops.html', shops=shops, 
+                                    generate_map_embed_code=gets.generate_map_embed_code,
+                                    acceptable_shop_name=gets.acceptable_shop_name,
+                                    list_images=gets.list_images)
         elif user_type=='shop-owner':
-            return render_template('shop-owner/shops.html', shops=shops, generate_map_embed_code=gets.generate_map_embed_code)
+            return render_template('shop-owner/shops.html', shops=shops, 
+                                    generate_map_embed_code=gets.generate_map_embed_code,
+                                    acceptable_shop_name=gets.acceptable_shop_name,
+                                    list_images=gets.list_images)
     else:
-        return render_template('not-logged-in/shops.html', shops=shops, generate_map_embed_code=gets.generate_map_embed_code)
+        return render_template('not-logged-in/shops.html', shops=shops, 
+                                    generate_map_embed_code=gets.generate_map_embed_code,
+                                    acceptable_shop_name=gets.acceptable_shop_name,
+                                    list_images=gets.list_images)
  
