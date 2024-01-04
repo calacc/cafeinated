@@ -27,7 +27,7 @@
                 {% set folder_path = 'logos/' + shop_name %}
                 {% set image_urls = list_images(folder_path) %} 
                 {% if image_urls %}
-                <img class="coffee-photo" src="{{ image_urls[0] }}" alt="{{ shop_name }} Logo">
+                <img class="coffee-photo" src="{{ shop_data['logo_url'] }}" alt="{{ shop_name }} Logo">
                 {%else%}
                 <img class="coffee-photo" src="{{ url_for('static', filename='img/coffee_shop.svg') }}"  style="margin-right:5px">
                 {%endif%}
