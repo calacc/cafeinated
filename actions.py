@@ -1,6 +1,7 @@
 from distutils.command import upload
 from __init__ import app, db, auth, mybucket
 import gets
+import time
 
 from flask import Flask, flash, redirect, render_template, request, send_file, url_for, session, abort
 import datetime
@@ -408,10 +409,15 @@ def edit_shop_details(shop_id):
             if file:
                 good_name=name.replace(" ", "")
                 filename = f"logos/{good_name}"
+
+                blob = mybucket.blob(filename)
+                if blob.exists():
+                    blob.delete()
+
                 blob = mybucket.blob(filename)
                 blob.upload_from_string(file.read(), content_type=file.content_type)
 
-                file_url = blob.public_url
+                file_url = f"{blob.public_url}?timestamp={int(time.time())}"
 
                 doc_ref=db.collection(u'Shops').document(name.replace(" ", ""))
                 doc_ref.update({'logo_url': file_url})
@@ -530,6 +536,19 @@ def rider():
     if request.method == 'POST':
         rider_name = request.form['rider_name']
         rider_email = request.form['rider_email']
+
+        new_rider={
+            'name': rider_name, 
+            'email': rider_email,
+            'type': 'rider'
+        }
+        
+        doc_ref=db.collection(u'Users').document(rider_email)
+        doc_ref.set(new_rider)
+
+        user=auth.create_user_with_email_and_password(rider_email, "riderCafeinated")
+
+        return redirect("/riders")
     else:
         users = [ user.to_dict() for user in  db.collection('Users').stream()]
 
