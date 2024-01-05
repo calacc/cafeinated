@@ -1,5 +1,5 @@
 from distutils.command import upload
-from __init__ import app, db, auth, mybucket
+from __init__ import app, db, auth, mybucket, flow, google_client_id
 import gets
 import time
 
@@ -7,6 +7,10 @@ from flask import Flask, flash, redirect, render_template, request, send_file, u
 import datetime
 import uuid
 from firebase_admin import credentials, storage
+import google.auth.transport.requests
+from pip._vendor import cachecontrol
+from google.oauth2 import id_token
+import requests
 
 def create_new_shop(name, address, phone_nr, owner):
     new_shop={
@@ -130,17 +134,21 @@ def edit_account():
             address = request.form['address']
             name = request.form['name']
             phonenr = request.form['phonenr']
+            google_auth = request.form.get('google_auth')
             updated_user={
                 'address': address,
                 'name': name,
                 'phonenr': phonenr,
+                'google_auth': google_auth
             }
         elif user_type=='shop-owner':
             name = request.form['name']
             phonenr = request.form['phonenr']
+            google_auth = request.form.get('google_auth')
             updated_user={
                 'name': name,
                 'phonenr': phonenr,
+                'google_auth': google_auth
             }
         doc_ref= db.collection(u'Users').document(session['user'])
         doc_ref.update(updated_user)
@@ -201,23 +209,74 @@ def create_shop_owner_account():
             return 'failed to create shop owner account'
     return render_template('not-logged-in/create-shop-owner-account.html')
 
-@app.route('/login', methods=['POST','GET'])
-def login():
+@app.route('/email', methods=['POST','GET'])
+def email():
     if('user' in session):
         return redirect('/')
     if request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('password')
-        try:
-            user=auth.sign_in_with_email_and_password(email, password)
-            session['user']=email
-            session['pass']=password
-            return redirect('/')
-        except:
-            return 'failed to log in'
+        users_ref = db.collection('Users')
+        query = users_ref.where('email', '==', email).limit(1)
+        docs = query.get()
+        if len(docs) > 0 and docs[0].exists:
+            session['email'] = email
 
+            return redirect('/login')
+        else:
+            return render_template('not-logged-in/error-page.html', errors=["Mailul introdus este incorect sau nu există în baza noastră de date.","Încearcă din nou!"])
     else:
-        return render_template('not-logged-in/login.html')
+        return render_template('not-logged-in/email.html')
+
+@app.route('/login', methods=['POST','GET'])
+def login():
+    email = session['email']
+    if('user' in session):
+        return redirect('/')
+    if request.method == 'POST':
+        form_type=request.form.get('form_type')
+        if form_type=='login_password':
+            password = request.form.get('password')
+            try:
+                user=auth.sign_in_with_email_and_password(email, password)
+                session['user']=email
+                session['pass']=password
+                return redirect('/')
+            except:
+                return render_template('not-logged-in/error-page.html', errors=["Failed to login!", "Parola gresita perhaps:("])
+        if form_type=='login_google':
+            authorization_url, state = flow.authorization_url()
+            session["state"] = state
+            session['user']=email
+            return redirect(authorization_url)
+    else:
+        users_ref = db.collection('Users')
+        query = users_ref.where('email', '==', email).limit(1)
+        docs = query.get()
+        google_auth = docs[0].get('google_auth')
+
+        return render_template('not-logged-in/login.html', google_auth=google_auth)
+
+@app.route("/callback")
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    if not session["state"] == request.args["state"]:
+        abort(500)  # State does not match!
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=google_client_id
+    )
+
+    session["google_id"] = id_info.get("sub")
+    session["name"] = id_info.get("name")
+    return redirect("/")
 
 @app.route('/logout')
 @gets.login_is_required
@@ -225,6 +284,7 @@ def logout():
     if 'user' in session:
         session.pop('cart', None)
         session.pop('user')
+        session.clear()
         return redirect('/')
     
 @app.route('/delete/<string:shop_id>', methods=['POST'])

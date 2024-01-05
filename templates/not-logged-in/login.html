@@ -10,11 +10,16 @@
 
 <div class="account">
 <form action="/login" method="POST" autocomplete="off">
-    E-mail: <input type="text" name="email">
-    <br>
     Parolă: <input type="password" name="password">
+    <input type="hidden" name="form_type" value="login_password">
     <input type="submit" class="submit">
 </form>
+{% if google_auth=='on'%}
+<form action="/login" method="POST" autocomplete="off">
+    <input type="hidden" name="form_type" value="login_google">
+    <input type="submit" class="submit" value="Login prin Google">
+</form>
+{%endif%}
 <br><br>
 </div>
 <div class = "create_account">
