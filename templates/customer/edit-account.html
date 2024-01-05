@@ -2,6 +2,14 @@
 
 {% block head %}
 <title>Contul meu</title>
+<style>
+    input[type="checkbox"] {
+        width: 20px; 
+        height: 20px; 
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -14,6 +22,11 @@
         Număr de telefon:  <input type="text" name="phonenr" value="{{ user_data.phonenr }}">
         <br>
         Adresă de livrare: <input type="text" name="address" value="{{ user_data.address }}">
+        <br>
+        <div style="display: flex; align-items: center;">
+            <a>Conectare prin Google: </a>
+            <input type="checkbox" id="google_auth" name="google_auth" {% if user_data.google_auth %}checked{% endif %}>
+        </div>
         <input type="submit" class="submit" value="Salvează modificările">
     </form>
 </div>

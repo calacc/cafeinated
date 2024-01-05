@@ -1,0 +1,18 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Eroare</title>
+{% endblock %}
+
+{% block body %}
+<div class = "box">
+    <img src="{{ url_for('static', filename='img/coffee_center.svg') }}"/>
+    <div class="group">
+        <h2>Eroare</h2>
+        {%for error in errors %}
+        <p>{{error}}</p>
+        {%endfor%}
+    </div>
+</div>
+
+{% endblock %}
