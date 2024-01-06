@@ -3,25 +3,57 @@
 {% block head %}
 <title>Login</title>
 <br>
+
+<style>
+    .custom-input {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      width: 220px;
+      margin-top: 10px;
+    }
+  
+    .custom-input img {
+      margin-right: 5px;
+    }
+  
+    .custom-input input[type="submit"] {
+      border: none;
+      outline: none; 
+      background-color: transparent; 
+      cursor: pointer;
+      justify-content:center;
+      font-weight: bold;
+    }
+</style>
+
 {% endblock %}
 
 {% block body %}
 <div class="label"><div class="text-wrapper">Cont</div>
 
-<div class="account">
-<form action="/login" method="POST" autocomplete="off">
-    Parolă: <input type="password" name="password">
-    <input type="hidden" name="form_type" value="login_password">
-    <input type="submit" class="submit">
-</form>
-{% if google_auth=='on'%}
-<form action="/login" method="POST" autocomplete="off">
-    <input type="hidden" name="form_type" value="login_google">
-    <input type="submit" class="submit" value="Login prin Google">
-</form>
-{%endif%}
+<div class="account" style="display: flex; flex-direction: column;justify-content: center; align-items: center;width: 250px">
+<div>
+    <form action="/login" method="POST" autocomplete="off">
+        E-mail: <input type="text" name="email">
+        Parolă: <input type="password" name="password">
+        <input type="hidden" name="form_type" value="login_password">
+        <input type="submit" class="submit">
+    </form>
+</div>
+<div>
+    <form action="/login" method="POST" autocomplete="off">
+        <input type="hidden" name="form_type" value="login_google">
+        <label class="custom-input">
+            <img style="width:25px; margin-bottom:-8px" src="{{ url_for('static', filename='img/google.png') }}" alt="Description">
+            <input type="submit" value="Login prin Google">
+        </label>
+    </form>
+</div>
 <br><br>
 </div>
+
 <div class = "create_account">
     <p class="not_account">
         <span class="text-wrapper">Nu ai cont la noi?&nbsp;</span>
