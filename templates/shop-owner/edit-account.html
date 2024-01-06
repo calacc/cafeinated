@@ -18,10 +18,6 @@
         Nume:   <input type="text" name="name" value="{{ user_data.name }}"> 
         <br>
         Număr de telefon:  <input type="text" name="phonenr" value="{{ user_data.phonenr }}">
-        <div style="display: flex; align-items: center;">
-            <a>Conectare prin Google: </a>
-            <input type="checkbox" id="google_auth" name="google_auth" {% if user_data.google_auth %}checked{% endif %}>
-        </div>
         <input type="submit" class="submit" value="Salvează modificările">
     </form>
 </div>

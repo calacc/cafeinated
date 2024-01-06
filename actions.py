@@ -209,32 +209,50 @@ def create_shop_owner_account():
             return 'failed to create shop owner account'
     return render_template('not-logged-in/create-shop-owner-account.html')
 
-@app.route('/email', methods=['POST','GET'])
-def email():
+@app.route('/-create-customer-account', methods=['POST','GET'])
+def create_customer_account_google():
     if('user' in session):
         return redirect('/')
-    if request.method == 'POST':
+    if request.method=='POST':
+        address = request.form.get('address')
         email = request.form.get('email')
-        users_ref = db.collection('Users')
-        query = users_ref.where('email', '==', email).limit(1)
-        docs = query.get()
-        if len(docs) > 0 and docs[0].exists:
-            session['email'] = email
+        name = request.form.get('name')
+        phonenr = request.form.get('phonenr')
+        try:
+            create_new_user(address, email, name, phonenr, 'customer')
+            session['user']=email
+            return redirect('/')
+        except:
+            return render_template('not-logged-in/error-page.html', errors=["Failed to create customer account."])
+    return render_template('not-logged-in/create-customer-account-google.html', name=session['name'], email=session['email'])
+   
+@app.route('/-create-shop-owner-account', methods=['POST','GET'])
+def create_shop_owner_account_google():
+    if('user' in session):
+        return redirect('/')
+    if request.method=='POST':
+        id_token = request.form.get('idToken')
+        email = request.form.get('email')
+        name = request.form.get('name')
+        phonenr = request.form.get('phonenr')
+        try:
+            
+            create_new_user('', email, name, phonenr, 'shop-owner')
 
-            return redirect('/login')
-        else:
-            return render_template('not-logged-in/error-page.html', errors=["Mailul introdus este incorect sau nu există în baza noastră de date.","Încearcă din nou!"])
-    else:
-        return render_template('not-logged-in/email.html')
+            session['user']=email
+            return redirect('/')
+        except:
+            return render_template('not-logged-in/error-page.html', errors=["Failed to create shop owner account."])
+    return render_template('not-logged-in/create-shop-owner-account-google.html', name=session['name'], email=session['email'])
 
 @app.route('/login', methods=['POST','GET'])
 def login():
-    email = session['email']
     if('user' in session):
         return redirect('/')
     if request.method == 'POST':
         form_type=request.form.get('form_type')
         if form_type=='login_password':
+            email = request.form.get('email')
             password = request.form.get('password')
             try:
                 user=auth.sign_in_with_email_and_password(email, password)
@@ -246,15 +264,9 @@ def login():
         if form_type=='login_google':
             authorization_url, state = flow.authorization_url()
             session["state"] = state
-            session['user']=email
             return redirect(authorization_url)
     else:
-        users_ref = db.collection('Users')
-        query = users_ref.where('email', '==', email).limit(1)
-        docs = query.get()
-        google_auth = docs[0].get('google_auth')
-
-        return render_template('not-logged-in/login.html', google_auth=google_auth)
+        return render_template('not-logged-in/login.html')
 
 @app.route("/callback")
 def callback():
@@ -276,7 +288,17 @@ def callback():
 
     session["google_id"] = id_info.get("sub")
     session["name"] = id_info.get("name")
-    return redirect("/")
+    session["email"] = user_email = id_info.get('email')
+    # print(user_email)
+
+    users_ref = db.collection('Users')
+    query = users_ref.where('email', '==', user_email).limit(1)
+    docs = query.get()
+    if len(docs) > 0 and docs[0].exists:
+        session['user']=user_email
+        return redirect("/")
+    else:
+        return render_template('not-logged-in/choose-type.html')
 
 @app.route('/logout')
 @gets.login_is_required

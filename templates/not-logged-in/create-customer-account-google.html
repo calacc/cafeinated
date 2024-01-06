@@ -1,0 +1,22 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Creează cont</title>
+{% endblock %}
+
+{% block body %}
+<div class="label"><div class="text-wrapper">Creează-ți un cont de client</div>
+
+<div class="account">
+<form action="/-create-customer-account" method="POST" autocomplete="off">
+    Nume:   <input type="text" name="name" value="{{name}}"> 
+    <br>
+    Număr de telefon:  <input type="text" name="phonenr">
+    <br>
+    Adresă de livrare: <input type="text" name="address">
+    <br>
+    E-mail: <input type="text" name="email" value="{{email}}">
+    <input type="submit" class="submit" action="Creează contul">
+</div>
+</form>
+{% endblock %}

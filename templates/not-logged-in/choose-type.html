@@ -1,0 +1,24 @@
+{% extends 'not-logged-in/base.html' %}
+
+{% block head %}
+<title>Login</title>
+<br>
+{% endblock %}
+
+{% block body %}
+<div class="label"><div class="text-wrapper">Cont</div>
+
+<div class = "create_account">
+    <p class="not_account">
+        <span class="text-wrapper">Nu ai cont la noi?&nbsp;</span>
+        <a href="/-create-customer-account"><span class="span">Creează</span></a>
+        <span class="text-wrapper">&nbsp;unul acum!<br></span>
+    </p>
+    
+    <p class="not_account_coffee">
+        <span class="text-wrapper">Vrei să îți adaugi Cafeneaua la noi?&nbsp;</span>
+        <a href="/-create-shop-owner-account"><span class="span">Alătură-te</span></a>
+        <span class="text-wrapper">&nbsp;acum!</span>
+    </p>
+</div>
+{% endblock %}
