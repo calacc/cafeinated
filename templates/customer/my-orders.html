@@ -14,27 +14,31 @@
 </div>
 <div style="padding:20px;margin-left:5%;">
     <h3 class = "title-cart" style="margin-left: 0px;">Comenzi active:</h3>
-    {% for order in my_orders_active %}
-        {% if order.status == 0 %}
-        <span class = "title-status" style="margin-left: 0px;">Status: Comanda nu este gata încă</span>
-        {% elif order.status == 1 %}
-        <span class = "title-status" style="margin-left: 0px;">Status: Comanda este în curs de livrare</span>
-        {% elif order.status == 2 %}
-        <span class = "title-status" style="margin-left: 0px;">Status: Comanda ajunge imediat!</span>
-        {% endif %}
-        <br>
-        <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
-        <ul style = "list-style-type: none;">
-            {% for item in order['items'] %}
-            <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - {{ item.price }}lei</li>
-            {%endfor%}
-            <p class = "items" style="margin-top:20px; color: #260507"> Preț total: {{order.total_price}}</p>
-        </ul>
-        
-        <br>
-        <hr style = "width:15%;border-top:2px dashed #260507;margin-bottom: 1%;">
-    {% endfor %}
+    <ul id="orders-list">
+    {% for order_id, status in orders_status.items() %}
+    {%if status!='3' %}
+        <li id="{{ order_id }}"> <span class="status" style="font-size: 1.25rem;">Status: {{ status_text[status] }}</span></li>
+                {% for order in my_orders_active %}
+                    {% if order.order_id == order_id %}
 
+                        <br>
+                        <span class = "title-data" style="margin-left: 0px;">Id: {{ order.order_id }}</span>
+                        <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
+                        <ul style = "list-style-type: none;">
+                            {% for item in order['items'] %}
+                            <li class = "items" style = "list-style-type: none;" >{{ item.shop }}: {{ item.name }} - {{ item.price }}lei</li>
+                            {%endfor%}
+                            <p class = "items" style="margin-top:20px; color: #260507"> Preț total: {{order.total_price}}</p>
+                        </ul>
+                        
+                        <br>
+                        <hr style = "width:15%;border-top:2px dashed #260507;margin-bottom: 1%;">
+
+                    {%endif%}
+                {% endfor %}
+        {%endif%}
+        {% endfor %}
+    </ul>
     <br><br>
 
     <h3 class = "title-cart" style="margin-left: 0px;font-size: 30px;margin-top: 0px;">Istoric comenzi:</h3>
@@ -51,5 +55,78 @@
     {% endfor %}
 </div>
 </div>
+
+<script>
+    var previousStatuses = {};
+
+    function pollAllOrderStatuses() {
+        // AJAX request to check all order statuses
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log('Received data:', data);  // Log the received data
+                    checkForStatusChanges(data);
+                }
+            }
+        };
+
+        xhr.open('GET', '/api/get_all_order_statuses', true);
+        xhr.send();
+    }
+
+    function checkForStatusChanges(newStatuses) {
+        console.log("check for status changes! ")
+        console.log(newStatuses);
+        for (var orderId in newStatuses) {
+            var statusElement = document.getElementById(orderId);
+
+            if (!statusElement) {
+                continue;
+            }        
+
+            var currentStatus = previousStatuses[orderId] || '';
+            var newStatus = newStatuses[orderId];
+
+            if (currentStatus !== newStatus) {
+                if(newStatus=='0')
+                    statusElement.innerText = 'Status: Comanda nu este gata încă';
+                if(newStatus=='1')
+                    statusElement.innerText = 'Status: Comanda este în curs de livrare';
+                if(newStatus=='2')
+                    statusElement.innerText = 'Status: Comanda ajunge imediat!';
+                // Notify the user when the status changes
+                if (currentStatus !== '') 
+                    showNotification('Order ' + orderId + ' Status Changed', 'New ' + statusElement.innerText);
+            }
+
+            previousStatuses[orderId] = newStatus;
+        }
+    }
+
+    function showNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            var notification = new Notification(title, { body: body });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === 'granted') {
+                    var notification = new Notification(title, { body: body });
+                }
+            });
+        }
+    }
+
+    // Start polling when the page is loaded
+    window.onload = function() {
+        // Check if the browser supports the Notification API
+        if ('Notification' in window) {
+            pollAllOrderStatuses();
+            setInterval(pollAllOrderStatuses, 5000); // Adjust the polling interval as needed
+        } else {
+            console.log('Notification API not supported in this browser.');
+        }
+    };
+</script>
 
 {% endblock %}

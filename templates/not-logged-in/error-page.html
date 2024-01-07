@@ -6,11 +6,12 @@
 
 {% block body %}
 <div class = "box">
-    <img src="{{ url_for('static', filename='img/coffee_center.svg') }}"/>
+    <img src="{{ url_for('static', filename='img/error.svg') }}"/>
     <div class="group">
-        <h2>Eroare</h2>
+        <h1>Eroare</h1>
+        <br>
         {%for error in errors %}
-        <p>{{error}}</p>
+        <p style="font-size: 1.25rem;">{{error}}</p>
         {%endfor%}
     </div>
 </div>

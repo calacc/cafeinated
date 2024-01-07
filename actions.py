@@ -177,7 +177,7 @@ def create_customer_account():
             session['user']=email
             return redirect('/')
         except:
-            return 'failed to create customer account'
+            return render_template('not-logged-in/error-page.html', errors=["Încercare de creare cont nereușită!"])
     return render_template('not-logged-in/create-customer-account.html')
    
 @app.route('/create-shop-owner-account', methods=['POST','GET'])
@@ -206,7 +206,7 @@ def create_shop_owner_account():
             session['user']=email
             return redirect('/')
         except:
-            return 'failed to create shop owner account'
+            return render_template('not-logged-in/error-page.html', errors=["Încercare de creare cont nereușită!"])
     return render_template('not-logged-in/create-shop-owner-account.html')
 
 @app.route('/-create-customer-account', methods=['POST','GET'])
@@ -223,7 +223,7 @@ def create_customer_account_google():
             session['user']=email
             return redirect('/')
         except:
-            return render_template('not-logged-in/error-page.html', errors=["Failed to create customer account."])
+            return render_template('not-logged-in/error-page.html', errors=["Încercare de creare cont nereușită!"])
     return render_template('not-logged-in/create-customer-account-google.html', name=session['name'], email=session['email'])
    
 @app.route('/-create-shop-owner-account', methods=['POST','GET'])
@@ -242,7 +242,7 @@ def create_shop_owner_account_google():
             session['user']=email
             return redirect('/')
         except:
-            return render_template('not-logged-in/error-page.html', errors=["Failed to create shop owner account."])
+            return render_template('not-logged-in/error-page.html', errors=["Încercare de creare cont nereușită!"])
     return render_template('not-logged-in/create-shop-owner-account-google.html', name=session['name'], email=session['email'])
 
 @app.route('/login', methods=['POST','GET'])
@@ -260,7 +260,8 @@ def login():
                 session['pass']=password
                 return redirect('/')
             except:
-                return render_template('not-logged-in/error-page.html', errors=["Failed to login!", "Parola gresita perhaps:("])
+                return render_template('not-logged-in/error-page.html', errors=["Încercare de autentificare nereușită!", 
+                                                                                "Emailul sau parola introduse sunt invalide."])
         if form_type=='login_google':
             authorization_url, state = flow.authorization_url()
             session["state"] = state
@@ -529,7 +530,6 @@ def edit_shop_details(shop_id):
                                generate_map_embed_code=gets.generate_map_embed_code,
                                acceptable_shop_name=gets.acceptable_shop_name,
                                list_images=gets.list_images)
-
 
 @app.route('/images/<shop_name>')
 def get_logo(shop_name):

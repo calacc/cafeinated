@@ -1,6 +1,6 @@
 from __init__ import app, db
 
-from flask import Flask, flash, redirect, render_template, request, url_for, session, abort
+from flask import Flask, flash, redirect, render_template, request, url_for, session, abort, jsonify
 from itertools import chain
 
 import gets
@@ -32,11 +32,15 @@ def my_orders():
                 db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 2).stream()
             )
         ]
+        orders_status={}
+        for order in my_orders_active:
+            orders_status.update({order['order_id']: str(order['status'])})
 
         my_orders_inactive = [
             order.to_dict() for order in db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 3).stream()
         ]
-        return render_template('customer/my-orders.html', my_orders_active=my_orders_active, my_orders_inactive=my_orders_inactive)
+        return render_template('customer/my-orders.html', my_orders_active=my_orders_active, 
+                               my_orders_inactive=my_orders_inactive, orders_status=orders_status,)
 
 @app.route('/orders', methods=['GET'])
 def active_orders():
@@ -201,3 +205,17 @@ def index():
                                     acceptable_shop_name=gets.acceptable_shop_name,
                                     list_images=gets.list_images)
  
+@app.route('/api/get_all_order_statuses')
+def get_all_order_statuses():
+    user_type = gets.get_user_type(session['user'])
+    my_orders_active = [
+        order.to_dict() for order in chain(
+            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 0).stream(),
+            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 1).stream(),
+            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 2).stream()
+        )
+    ]
+    orders_status={}
+    for order in my_orders_active:
+        orders_status.update({order['order_id']: str(order['status'])})
+    return jsonify(orders_status)
