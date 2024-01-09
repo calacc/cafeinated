@@ -16,11 +16,10 @@
     <h3 class = "title-cart" style="margin-left: 0px;">Comenzi active:</h3>
     <ul id="orders-list">
     {% for order_id, status in orders_status.items() %}
-    {%if status!='3' %}
         <li id="{{ order_id }}"> <span class="status" style="font-size: 1.25rem;">Status: {{ status_text[status] }}</span></li>
                 {% for order in my_orders_active %}
                     {% if order.order_id == order_id %}
-
+                        <div id="{{ order_id }}!">
                         <br>
                         <span class = "title-data" style="margin-left: 0px;">Id: {{ order.order_id }}</span>
                         <span class = "title-data" style="margin-left: 0px;">Dată: {{ order.date }}</span>
@@ -33,10 +32,9 @@
                         
                         <br>
                         <hr style = "width:15%;border-top:2px dashed #260507;margin-bottom: 1%;">
-
+                        </div>  
                     {%endif%}
                 {% endfor %}
-        {%endif%}
         {% endfor %}
     </ul>
     <br><br>
@@ -96,6 +94,12 @@
                     statusElement.innerText = 'Status: Comanda este în curs de livrare';
                 if(newStatus=='2')
                     statusElement.innerText = 'Status: Comanda ajunge imediat!';
+                if(newStatus=='3'){
+                    statusElement.style.display = 'none';
+                    var statusElement2 = document.getElementById(orderId+'!');
+                    statusElement2.style.display = 'none';
+                    showNotification('Order ' + orderId + ' Status Changed', 'New Status: Comanda tocmai a fost livrată!');
+                }
                 // Notify the user when the status changes
                 if (currentStatus !== '') 
                     showNotification('Order ' + orderId + ' Status Changed', 'New ' + statusElement.innerText);
