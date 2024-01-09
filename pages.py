@@ -39,8 +39,14 @@ def my_orders():
         my_orders_inactive = [
             order.to_dict() for order in db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 3).stream()
         ]
+        status_text = {
+            '0': 'Status: Comanda nu este gata încă',
+            '1': 'Status: Comanda este în curs de livrare',
+            '2': 'Status: Comanda ajunge imediat!',
+            '3': 'Status: Comanda tocmai a fost livrată!'
+        }
         return render_template('customer/my-orders.html', my_orders_active=my_orders_active, 
-                               my_orders_inactive=my_orders_inactive, orders_status=orders_status,)
+                               my_orders_inactive=my_orders_inactive, orders_status=orders_status,status_text=status_text)
 
 @app.route('/orders', methods=['GET'])
 def active_orders():
@@ -212,7 +218,8 @@ def get_all_order_statuses():
         order.to_dict() for order in chain(
             db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 0).stream(),
             db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 1).stream(),
-            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 2).stream()
+            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 2).stream(),
+            db.collection('Orders').where('user_id', '==', session['user']).where('status', '==', 3).stream()
         )
     ]
     orders_status={}
