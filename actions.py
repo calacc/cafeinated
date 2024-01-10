@@ -263,7 +263,7 @@ def login():
                 return render_template('not-logged-in/error-page.html', errors=["Încercare de autentificare nereușită!", 
                                                                                 "Emailul sau parola introduse sunt invalide."])
         if form_type=='login_google':
-            authorization_url, state = flow.authorization_url()
+            authorization_url, state = flow.authorization_url(include_granted_scopes='true')
             session["state"] = state
             return redirect(authorization_url)
     else:
