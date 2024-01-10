@@ -40,7 +40,8 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
                                      scopes=["https://www.googleapis.com/auth/userinfo.profile", 
                                              "https://www.googleapis.com/auth/userinfo.email", "openid"],
-                                     redirect_uri="http://127.0.0.1:1111/callback")
+                                     redirect_uri=["http://127.0.0.1:1111/callback",
+                                                   "https://cafeinated-vny8.onrender.com/callback"])
 
 import gets
 import actions
