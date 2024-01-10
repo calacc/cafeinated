@@ -40,8 +40,9 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
                                      scopes=["https://www.googleapis.com/auth/userinfo.profile", 
-                                             "https://www.googleapis.com/auth/userinfo.email", "openid"],
-                                     redirect_uri=["https://cafeinated.onrender.com/oauth2/callback", "http://127.0.0.1:1111/callback"])
+                                             "https://www.googleapis.com/auth/userinfo.email", "openid"])
+                                    #  redirect_uri=["https://cafeinated.onrender.com/oauth2/callback", "http://127.0.0.1:1111/callback"])
+flow.redirect_uri = Flask.url_for('callback', _external=True)
 
 import gets
 import actions
