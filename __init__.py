@@ -13,7 +13,7 @@ app = Flask(__name__, template_folder='templates')
 
 config = {
     'apiKey': 'AIzaSyDkHcb2ygZuvYI3MZ1pB2WDISC7vgAmLUE',
-    'authDomain': 'cafeinated-ab14e.firebaseapp.com',
+    'authDomain': 'https://cafeinated.onrender.com',
     'projectId': 'cafeinated-ab14e',
     'storageBucket': 'cafeinated-ab14e.appspot.com',
     'messagingSenderId': '29698415898',
