@@ -41,7 +41,7 @@ flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
                                      scopes=["https://www.googleapis.com/auth/userinfo.profile", 
                                              "https://www.googleapis.com/auth/userinfo.email", "openid"],
                                      redirect_uri=["http://127.0.0.1:1111/callback",
-                                                   "https://cafeinated-vny8.onrender.com/callback"])
+                                                   "https://cafeinated.onrender.com/callback"])
 
 import gets
 import actions
