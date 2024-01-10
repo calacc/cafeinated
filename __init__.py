@@ -19,7 +19,8 @@ config = {
     'messagingSenderId': '29698415898',
     'appId': '1:29698415898:web:ef6e70fc421929b2a1a0a3',
     'measurementId': 'G-X7J5JBGF4L',
-    'databaseURL': 'https://console.firebase.google.com/project/cafeinated-ab14e/database/cafeinated-ab14e-default-rtdb/data/~2F'
+    'databaseURL': 'https://console.firebase.google.com/project/cafeinated-ab14e/database/cafeinated-ab14e-default-rtdb/data/~2F',
+    'BASE_URL': 'https://cafeinated.onrender.com'
 }
 
 firebase = pyrebase.initialize_app(config)
