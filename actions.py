@@ -297,7 +297,7 @@ def callback():
     docs = query.get()
     if len(docs) > 0 and docs[0].exists:
         session['user']=user_email
-        return redirect("/")
+        return redirect(url_for('home', _external=True))
     else:
         return render_template('not-logged-in/choose-type.html')
 
