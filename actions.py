@@ -263,7 +263,7 @@ def login():
                 return render_template('not-logged-in/error-page.html', errors=["Încercare de autentificare nereușită!", 
                                                                                 "Emailul sau parola introduse sunt invalide."])
         if form_type=='login_google':
-            authorization_url, state = flow.authorization_url()
+            authorization_url, state = flow.authorization_url(access_type='offline',include_granted_scopes='true')
             session["state"] = state
             return redirect(authorization_url)
     else:
@@ -297,7 +297,7 @@ def callback():
     docs = query.get()
     if len(docs) > 0 and docs[0].exists:
         session['user']=user_email
-        return redirect("/")
+        return redirect(url_for('home', _external=True))
     else:
         return render_template('not-logged-in/choose-type.html')
 

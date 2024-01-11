@@ -1,0 +1,3 @@
+testez mesaj de commit dintr un fisier
+oare cum va fi displayuit ? 
+stay tuned
